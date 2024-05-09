@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:tinhtoandidong_project/resources/auth_method.dart';
+import 'package:tinhtoandidong_project/screens/login_screen.dart';
 import 'package:tinhtoandidong_project/widgets/text_field_input.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -110,6 +111,14 @@ class _SignupScreenState extends State<SignupScreen> {
                         phone: _phoneController.text,
                       );
                       print(res);
+                      if (res == 'Success dang ki:o auth_method.dart') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginScreen(),
+                          ),
+                        );
+                      }
                     }
                   : null,
               child: AnimatedOpacity(
@@ -146,7 +155,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Text(
-                    'Don\'t have an account?',
+                    'Have an account?',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.brown.shade900,
