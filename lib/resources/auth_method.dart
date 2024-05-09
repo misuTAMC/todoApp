@@ -23,7 +23,7 @@ class AuthMethods {
         //*register user with email and password
         UserCredential userCredential =
             await _auth.createUserWithEmailAndPassword(
-          email: email,
+          email: email.trim(),
           password: password.trim(),
         );
         // UserCredential credential = await _auth.signInWithEmailAndPassword(
@@ -37,7 +37,7 @@ class AuthMethods {
           'username': username,
           'phone': phone,
           'uid': userCredential.user!.uid,
-          'profile_photo': [],
+          'favorite': [],
         });
         res1 = "Success dang ki:o auth_method.dart";
       }
