@@ -1,6 +1,9 @@
 // ignore_for_file: avoid_print
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:tinhtoandidong_project/resources/storage_method.dart';
 
 class AuthMethods {
   //*tao 1 instance cua FirebaseAuth
@@ -12,9 +15,11 @@ class AuthMethods {
     required String password,
     required String username,
     required String phone,
-    //Uint8List? file,
+    required Uint8List file,
   }) async {
     String res1 = "Some error occured in dang ky :loi o auth_method.dart";
+
+    String photoUrl=await StorageMethod().uploadImageToStorage('avatar', file, false);
     try {
       if (email.isNotEmpty ||
           password.isNotEmpty ||
@@ -26,10 +31,10 @@ class AuthMethods {
           email: email.trim(),
           password: password.trim(),
         );
-        // UserCredential credential = await _auth.signInWithEmailAndPassword(
-        //   email: email,
-        //   password: password.trim(),
-        // );
+         UserCredential credential = await _auth.signInWithEmailAndPassword(
+           email: email,
+           password: password.trim(),
+         );
         print(userCredential.user!.uid);
         //*add user to firestore
         await _firestore.collection('users').doc(userCredential.user!.uid).set({
@@ -38,6 +43,7 @@ class AuthMethods {
           'phone': phone,
           'uid': userCredential.user!.uid,
           'favorite': [],
+          'photoUrl':photoUrl,
         });
         res1 = "Success dang ki:o auth_method.dart";
       }
