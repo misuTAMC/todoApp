@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -19,7 +20,8 @@ class AuthMethods {
   }) async {
     String res1 = "Some error occured in dang ky :loi o auth_method.dart";
 
-    String photoUrl=await StorageMethod().uploadImageToStorage('avatar', file, false);
+    String photoUrl =
+        await StorageMethod().uploadImageToStorage('avatar', file, false);
     try {
       if (email.isNotEmpty ||
           password.isNotEmpty ||
@@ -31,10 +33,10 @@ class AuthMethods {
           email: email.trim(),
           password: password.trim(),
         );
-         UserCredential credential = await _auth.signInWithEmailAndPassword(
-           email: email,
-           password: password.trim(),
-         );
+        UserCredential credential = await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password.trim(),
+        );
         print(userCredential.user!.uid);
         //*add user to firestore
         await _firestore.collection('users').doc(userCredential.user!.uid).set({
@@ -43,7 +45,7 @@ class AuthMethods {
           'phone': phone,
           'uid': userCredential.user!.uid,
           'favorite': [],
-          'photoUrl':photoUrl,
+          'photoUrl': photoUrl,
         });
         res1 = "Success dang ki:o auth_method.dart";
       }
@@ -61,16 +63,23 @@ class AuthMethods {
     return res1;
   }
 
-  Future<String> signInUser(
-      {required String email, required String password}) async {
+  Future<String> logInUser({
+    required String email,
+    required String password,
+  }) async {
     String res2 = "Some error occuredin dang nhap:loi o auth_method.dart";
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      print(userCredential.user!.uid);
-      res2 = "Success dang nhap:o auth_method.dart";
+      if (email.isNotEmpty || password.isNotEmpty) {
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+
+        print(userCredential.user!.uid);
+        res2 = "Success dang nhap:o auth_method.dart";
+      } else {
+        res2 = "Email or password is empty";
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         return 'No user found for that email.';

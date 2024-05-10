@@ -1,8 +1,9 @@
 // ignore_for_file: avoid_print
 import 'package:flutter/material.dart';
+import 'package:tinhtoandidong_project/constant.dart';
 import 'package:tinhtoandidong_project/resources/auth_method.dart';
-import 'package:tinhtoandidong_project/screens/signup_screen.dart';
-import 'package:tinhtoandidong_project/screens/welcom.dart';
+import 'package:tinhtoandidong_project/screens/home_screen.dart';
+import 'package:tinhtoandidong_project/utils/utils.dart';
 import 'package:tinhtoandidong_project/widgets/logo_app.dart';
 import 'package:tinhtoandidong_project/widgets/text_field_input.dart';
 
@@ -18,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen>
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isFilled = false;
+  bool _isLoading = false;
   //*animate :>>
   late Animation<Alignment> _topAlignmentAnimation;
   late Animation<Alignment> _bottomAlignmentAnimation;
@@ -32,71 +34,8 @@ class _LoginScreenState extends State<LoginScreen>
       duration: const Duration(seconds: 4),
     );
 
-    _topAlignmentAnimation = TweenSequence<Alignment>(
-      [
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.topLeft,
-            end: Alignment.topRight,
-          ),
-          weight: 1,
-        ),
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.topRight,
-            end: Alignment.bottomRight,
-          ),
-          weight: 1,
-        ),
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.bottomRight,
-            end: Alignment.bottomLeft,
-          ),
-          weight: 1,
-        ),
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.bottomLeft,
-            end: Alignment.topLeft,
-          ),
-          weight: 1,
-        ),
-      ],
-    ).animate(_controller);
-
-    _bottomAlignmentAnimation = TweenSequence<Alignment>(
-      [
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.bottomRight,
-            end: Alignment.bottomLeft,
-          ),
-          weight: 1,
-        ),
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.bottomLeft,
-            end: Alignment.topLeft,
-          ),
-          weight: 1,
-        ),
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.topLeft,
-            end: Alignment.topRight,
-          ),
-          weight: 1,
-        ),
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.topRight,
-            end: Alignment.bottomRight,
-          ),
-          weight: 1,
-        ),
-      ],
-    ).animate(_controller);
+    _topAlignmentAnimation = setupTopAlignmentAnimation(_controller);
+    _bottomAlignmentAnimation = setupBottomAlignmentAnimation(_controller);
 
     _controller.repeat();
   }
@@ -121,6 +60,35 @@ class _LoginScreenState extends State<LoginScreen>
         _isFilled = false;
       });
     }
+  }
+
+  void loginUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().logInUser(
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+    print(res);
+    if (res == "Success dang nhap:o auth_method.dart") {
+      // Navigator.of(context).pushReplacement(
+      //   MaterialPageRoute(
+      //     builder: (context) => const HomeScreen(),
+      //   ),
+      // );
+      // Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //   return const HomeScreen();
+      // }));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return const HomeScreen();
+      }));
+    } else {
+      showSnackBar(context, res);
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -179,22 +147,7 @@ class _LoginScreenState extends State<LoginScreen>
                     //todo: button login
                     const SizedBox(height: 16),
                     InkWell(
-                      onTap: _isFilled
-                          ? () async {
-                              String res = await AuthMethods().signInUser(
-                                email: _emailController.text,
-                                password: _passwordController.text,
-                              );
-                              print(res);
-                              if (res ==
-                                  "Success dang nhap:o auth_method.dart") {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return const WelcomeScreen();
-                                }));
-                              }
-                            }
-                          : null,
+                      onTap: _isFilled ? loginUser : null,
                       child: AnimatedOpacity(
                         opacity: _isFilled ? 1 : 0,
                         duration: const Duration(milliseconds: 500),
@@ -209,13 +162,19 @@ class _LoginScreenState extends State<LoginScreen>
                             ),
                             color: Color.fromARGB(163, 24, 24, 0),
                           ),
-                          child: const Text(
-                            'Log in',
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
+                          child: _isLoading
+                              ? const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Text(
+                                  'Log in',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                     ),
@@ -230,7 +189,7 @@ class _LoginScreenState extends State<LoginScreen>
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Text(
-                            'Don\'t have an account?',
+                            'If you already have an account?',
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.red.shade900,
@@ -243,14 +202,17 @@ class _LoginScreenState extends State<LoginScreen>
                             onTap: () {
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context) {
-                                return const SignupScreen();
+                                return const HomeScreen();
                               }));
                             },
-                            child: Text('Sign up',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.pink.shade900,
-                                    fontWeight: FontWeight.bold)),
+                            child: Text(
+                              'Sign in',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.pink.shade900,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         )
                       ],

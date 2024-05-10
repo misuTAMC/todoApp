@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tap Tap Pet Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            position: relative;
+        }
+        #pet {
+            width: 150px;
+            height: 150px;
+            background-color: #ffcc00;
+            margin: 50px auto;
+            border-radius: 50%;
+            line-height: 150px;
+            font-size: 24px;
+            cursor: pointer;
+            position: absolute;
+        }
+        #money {
+            font-size: 20px;
+        }
+        #pet-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+        .pet {
+            font-size: 30px;
+            margin: 0 10px;
+            cursor: pointer;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <div id="pet" onclick="earnMoney()">Tap me!</div>
+    <div id="money">Money: $<span id="money-value">0</span></div>
+    <div id="pet-container"></div>
+
+    <script>
+        let money = 0;
+        let pets = [];
+
+        function earnMoney() {
+            money++;
+            document.getElementById('money-value').innerText = money;
+            if (money % 10 === 0) { // Buy a pet every 10 taps
+                buyPet();
+            }
+        }
+
+        function buyPet() {
+            if (money >= 10) { // Check if player has enough money to buy a pet
+                let petIndex = Math.floor(Math.random() * 7);
+                let pet = ['🐶', '🐱', '🐰', '🐦', '🐠', '🐢', ''][petIndex];// List of pets you can buy
+                pets.push({
+                    icon: pet,
+                    x: Math.floor(Math.random() * (window.innerWidth - 150)),
+                    y: Math.floor(Math.random() * (window.innerHeight - 150)),
+                    dx: Math.random() * 2 - 1, // Random horizontal speed between -1 and 1
+                    dy: Math.random() * 2 - 1, // Random vertical speed between -1 and 1
+                });
+                money -= 10; // Subtract the cost of pet from money
+                document.getElementById('money-value').innerText = money;
+                updatePets();
+            } else {
+                alert('You don\'t have enough money to buy a pet.');
+            }
+        }
+
+        function updatePets() {
+            let petContainer = document.getElementById('pet-container');
+            petContainer.innerHTML = ''; // Clear existing pets
+            pets.forEach(function(pet, index) {
+                let petElement = document.createElement('span');
+                petElement.className = 'pet';
+                petElement.innerText = pet.icon;
+                petElement.style.left = pet.x + 'px';
+                petElement.style.top = pet.y + 'px';
+                petElement.setAttribute('data-index', index); // Set data attribute to identify the pet
+                petContainer.appendChild(petElement);
+            });
+
+            setInterval(function() {
+                pets.forEach(function(pet, index) {
+                    pet.x += pet.dx;
+                    pet.y += pet.dy;
+                    if (pet.x <= 0 || pet.x >= window.innerWidth - 150) {
+                        pet.dx = -pet.dx; // Reverse horizontal direction if pet reaches the left or right edge
+                    }
+                    if (pet.y <= 0 || pet.y >= window.innerHeight - 150) {
+                        pet.dy = -pet.dy; // Reverse vertical direction if pet reaches the top or bottom edge
+                    }
+                    let petElement = document.querySelector('.pet[data-index="' + index + '"]');
+                    petElement.style.left = pet.x + 'px';
+                    petElement.style.top = pet.y + 'px';
+                });
+            }, 30); // Update pet positions every 30 milliseconds
+        }
+    </script>
+</body>
+</html>

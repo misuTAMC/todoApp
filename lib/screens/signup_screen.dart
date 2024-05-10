@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tinhtoandidong_project/constant.dart';
 import 'package:tinhtoandidong_project/resources/auth_method.dart';
 import 'package:tinhtoandidong_project/screens/login_screen.dart';
 import 'package:tinhtoandidong_project/utils/utils.dart';
@@ -26,6 +27,7 @@ class _SignupScreenState extends State<SignupScreen>
   //*anh,...v
   Uint8List? _image;
   bool _isFilled = false;
+  bool _isLoading = false;
   //*animate :>>
   late Animation<Alignment> _topAlignmentAnimation;
   late Animation<Alignment> _bottomAlignmentAnimation;
@@ -39,73 +41,8 @@ class _SignupScreenState extends State<SignupScreen>
       vsync: this,
       duration: const Duration(seconds: 4),
     );
-
-    _topAlignmentAnimation = TweenSequence<Alignment>(
-      [
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.topLeft,
-            end: Alignment.topRight,
-          ),
-          weight: 1,
-        ),
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.topRight,
-            end: Alignment.bottomRight,
-          ),
-          weight: 1,
-        ),
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.bottomRight,
-            end: Alignment.bottomLeft,
-          ),
-          weight: 1,
-        ),
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.bottomLeft,
-            end: Alignment.topLeft,
-          ),
-          weight: 1,
-        ),
-      ],
-    ).animate(_controller);
-
-    _bottomAlignmentAnimation = TweenSequence<Alignment>(
-      [
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.bottomRight,
-            end: Alignment.bottomLeft,
-          ),
-          weight: 1,
-        ),
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.bottomLeft,
-            end: Alignment.topLeft,
-          ),
-          weight: 1,
-        ),
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.topLeft,
-            end: Alignment.topRight,
-          ),
-          weight: 1,
-        ),
-        TweenSequenceItem<Alignment>(
-          tween: Tween<Alignment>(
-            begin: Alignment.topRight,
-            end: Alignment.bottomRight,
-          ),
-          weight: 1,
-        ),
-      ],
-    ).animate(_controller);
-
+    _topAlignmentAnimation = setupTopAlignmentAnimation(_controller);
+    _bottomAlignmentAnimation = setupBottomAlignmentAnimation(_controller);
     _controller.repeat();
   }
 
@@ -142,6 +79,32 @@ class _SignupScreenState extends State<SignupScreen>
     setState(() {
       _image = im;
     });
+  }
+
+  void signUpUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().signUpUser(
+      email: _emailController.text,
+      password: _passwordController.text,
+      username: _usernameController.text,
+      phone: _phoneController.text,
+      file: _image!,
+    );
+    print(res);
+    setState(() {
+      _isLoading = false;
+    });
+    if (res == 'Success dang ki:o auth_method.dart') {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const LoginScreen(),
+        ),
+      );
+    } else {
+      showSnackBar(context, res);
+    }
   }
 
   @override
@@ -243,48 +206,36 @@ class _SignupScreenState extends State<SignupScreen>
                   ),
                   //todo: button login
                   const SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: _isFilled
-                        ? () async {
-                            String res = await AuthMethods().signUpUser(
-                              email: _emailController.text,
-                              password: _passwordController.text,
-                              username: _usernameController.text,
-                              phone: _phoneController.text,
-                              file: _image!,
-                            );
-                            print(res);
-                            if (res == 'Success dang ki:o auth_method.dart') {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const LoginScreen(),
-                                ),
-                              );
-                            }
-                          }
-                        : null,
+                  InkWell(
+                    onTap: _isFilled ? signUpUser : null,
                     child: AnimatedOpacity(
                       opacity: _isFilled ? 1 : 0,
                       duration: const Duration(milliseconds: 500),
-                      child: Container(
-                        width: 150,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        decoration: const ShapeDecoration(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          color: Color.fromARGB(163, 24, 24, 0),
-                        ),
-                        child: const Text(
-                          'Sign up',
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
+                      child: _isLoading
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            )
+                          : Container(
+                              width: 150,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              decoration: const ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
+                                color: Color.fromARGB(163, 24, 24, 0),
+                              ),
+                              child: const Text(
+                                'Sign up',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
                     ),
                   ),
 
