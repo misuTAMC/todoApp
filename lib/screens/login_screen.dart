@@ -2,7 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:tinhtoandidong_project/constant.dart';
 import 'package:tinhtoandidong_project/resources/auth_method.dart';
+import 'package:tinhtoandidong_project/responsive/mobile_screen_layout.dart';
+import 'package:tinhtoandidong_project/responsive/responsive_layout_screen.dart';
+import 'package:tinhtoandidong_project/responsive/web_screen.layout.dart';
 import 'package:tinhtoandidong_project/screens/home_screen.dart';
+import 'package:tinhtoandidong_project/screens/signup_screen.dart';
 import 'package:tinhtoandidong_project/utils/utils.dart';
 import 'package:tinhtoandidong_project/widgets/logo_app.dart';
 import 'package:tinhtoandidong_project/widgets/text_field_input.dart';
@@ -72,23 +76,25 @@ class _LoginScreenState extends State<LoginScreen>
     );
     print(res);
     if (res == "Success dang nhap:o auth_method.dart") {
-      // Navigator.of(context).pushReplacement(
-      //   MaterialPageRoute(
-      //     builder: (context) => const HomeScreen(),
-      //   ),
-      // );
-      // Navigator.push(context, MaterialPageRoute(builder: (context) {
-      //   return const HomeScreen();
-      // }));
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return const HomeScreen();
-      }));
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) =>  const ResponsiveLayout(
+                webScreenLayout: WebScreenLayout(),
+                mobileScreenLayout: MobileScreenLayout(),
+              ),
+        ),
+      );
     } else {
       showSnackBar(context, res);
     }
     setState(() {
       _isLoading = false;
     });
+  }
+  void navigatorToSignup() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return const SignupScreen();
+    }));
   }
 
   @override
@@ -189,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen>
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Text(
-                            'If you already have an account?',
+                            'Don\'t have an account yet?',
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.red.shade900,
@@ -199,14 +205,9 @@ class _LoginScreenState extends State<LoginScreen>
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return const HomeScreen();
-                              }));
-                            },
+                            onTap: navigatorToSignup,
                             child: Text(
-                              'Sign in',
+                              ' Sign up',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.pink.shade900,

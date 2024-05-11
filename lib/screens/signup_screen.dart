@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tinhtoandidong_project/constant.dart';
 import 'package:tinhtoandidong_project/resources/auth_method.dart';
+import 'package:tinhtoandidong_project/responsive/mobile_screen_layout.dart';
+import 'package:tinhtoandidong_project/responsive/responsive_layout_screen.dart';
+import 'package:tinhtoandidong_project/responsive/web_screen.layout.dart';
 import 'package:tinhtoandidong_project/screens/login_screen.dart';
 import 'package:tinhtoandidong_project/utils/utils.dart';
 import 'package:tinhtoandidong_project/widgets/text_field_input.dart';
@@ -97,14 +100,23 @@ class _SignupScreenState extends State<SignupScreen>
       _isLoading = false;
     });
     if (res == 'Success dang ki:o auth_method.dart') {
-      Navigator.of(context).pushReplacement(
+      Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => const LoginScreen(),
+          builder: (context) => const ResponsiveLayout(
+            webScreenLayout: WebScreenLayout(),
+            mobileScreenLayout: MobileScreenLayout(),
+          ),
         ),
       );
     } else {
       showSnackBar(context, res);
     }
+  }
+
+  void navigatorToLogin() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return const LoginScreen();
+    }));
   }
 
   @override
@@ -249,20 +261,23 @@ class _SignupScreenState extends State<SignupScreen>
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Text(
-                          'Have an account?',
+                          'Already have an account?',
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.brown.shade900,
+                            color: Colors.red.shade900,
                           ),
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Text('Sign up',
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.brown.shade900,
-                                fontWeight: FontWeight.bold)),
+                      GestureDetector(
+                        onTap: navigatorToLogin,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Text(' Login',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.pink.shade900,
+                                  fontWeight: FontWeight.bold)),
+                        ),
                       )
                     ],
                   ),
