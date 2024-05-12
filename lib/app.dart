@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'tinh toan di dong',
         theme: ThemeData.dark().copyWith(
-          scaffoldBackgroundColor: Colors.red.shade100,
+          scaffoldBackgroundColor: Colors.purple.shade50,
         ),
         home: StreamBuilder(
           //todo: when the user signs in or out, the authStateChanges stream will emit an event
