@@ -5,7 +5,6 @@ import 'package:tinhtoandidong_project/resources/auth_method.dart';
 import 'package:tinhtoandidong_project/responsive/mobile_screen_layout.dart';
 import 'package:tinhtoandidong_project/responsive/responsive_layout_screen.dart';
 import 'package:tinhtoandidong_project/responsive/web_screen.layout.dart';
-import 'package:tinhtoandidong_project/screens/home_screen.dart';
 import 'package:tinhtoandidong_project/screens/signup_screen.dart';
 import 'package:tinhtoandidong_project/utils/utils.dart';
 import 'package:tinhtoandidong_project/widgets/logo_app.dart';
@@ -76,21 +75,23 @@ class _LoginScreenState extends State<LoginScreen>
     );
     print(res);
     if (res == "Success dang nhap:o auth_method.dart") {
-      Navigator.of(context).push(
+      Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) =>  const ResponsiveLayout(
-                webScreenLayout: WebScreenLayout(),
-                mobileScreenLayout: MobileScreenLayout(),
-              ),
+          builder: (context) => const ResponsiveLayout(
+            webScreenLayout: WebScreenLayout(),
+            mobileScreenLayout: MobileScreenLayout(),
+          ),
         ),
       );
     } else {
       showSnackBar(context, res);
+      print("loi dang nhap: $res");
     }
     setState(() {
       _isLoading = false;
     });
   }
+
   void navigatorToSignup() {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return const SignupScreen();

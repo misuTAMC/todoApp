@@ -96,20 +96,28 @@ class _SignupScreenState extends State<SignupScreen>
       file: _image!,
     );
     print(res);
-    setState(() {
-      _isLoading = false;
-    });
+
     if (res == 'Success dang ki:o auth_method.dart') {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const ResponsiveLayout(
-            webScreenLayout: WebScreenLayout(),
-            mobileScreenLayout: MobileScreenLayout(),
+      setState(() {
+        _isLoading = false;
+      });
+      if (context.mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const ResponsiveLayout(
+              webScreenLayout: WebScreenLayout(),
+              mobileScreenLayout: MobileScreenLayout(),
+            ),
           ),
-        ),
-      );
+        );
+      }
     } else {
-      showSnackBar(context, res);
+      setState(() {
+        _isLoading = false;
+      });
+      if (context.mounted) {
+        showSnackBar(context, res);
+      }
     }
   }
 
@@ -166,8 +174,8 @@ class _SignupScreenState extends State<SignupScreen>
                             )
                           : CircleAvatar(
                               radius: 55,
-                              backgroundImage: const NetworkImage(
-                                  'https://i.stack.imgur.com/l60Hf.png'),
+                              backgroundImage: const AssetImage(
+                                  'assets/profiles/profiles.jpg'),
                               backgroundColor: Colors.red.shade100,
                             ),
                       Positioned(

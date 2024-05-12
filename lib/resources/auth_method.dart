@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tinhtoandidong_project/resources/storage_method.dart';
 
+import '../model/user.dart' as model;
+
 class AuthMethods {
   //*tao 1 instance cua FirebaseAuth
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -33,20 +35,21 @@ class AuthMethods {
           email: email.trim(),
           password: password.trim(),
         );
-        UserCredential credential = await _auth.signInWithEmailAndPassword(
-          email: email,
-          password: password.trim(),
-        );
         print(userCredential.user!.uid);
+        //*create user object theo model duoc tao(o model/user.dart)
+        model.User user = model.User(
+          email: email,
+          uid: userCredential.user!.uid,
+          username: username,
+          phone: phone,
+          favorite: [],
+          photoUrl: photoUrl,
+        );
         //*add user to firestore
-        await _firestore.collection('users').doc(userCredential.user!.uid).set({
-          'email': email,
-          'username': username,
-          'phone': phone,
-          'uid': userCredential.user!.uid,
-          'favorite': [],
-          'photoUrl': photoUrl,
-        });
+        await _firestore
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .set(user.toJson());
         res1 = "Success dang ki:o auth_method.dart";
       }
     } on FirebaseAuthException catch (e) {
@@ -92,5 +95,13 @@ class AuthMethods {
       res2 = err.toString();
     }
     return res2;
+  }
+
+  Future<model.User> getUserDetails() async {
+    User currentUser = _auth.currentUser!;
+
+    DocumentSnapshot documentSnapshot =
+        await _firestore.collection('users').doc(currentUser.uid).get();
+    return model.User.fromSnap(documentSnapshot);
   }
 }
