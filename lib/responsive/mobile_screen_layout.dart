@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:provider/provider.dart';
-import 'package:tinhtoandidong_project/model/user.dart' as model;
-import 'package:tinhtoandidong_project/provider/user_provider.dart';
 import 'package:tinhtoandidong_project/screens/todo_screen.dart';
-import 'package:tinhtoandidong_project/widgets/task.dart';
 
 class MobileScreenLayout extends StatefulWidget {
   const MobileScreenLayout({super.key});
@@ -32,7 +28,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
 
   @override
   Widget build(BuildContext context) {
-    model.User user = Provider.of<UserProvider>(context).getUser;
+    //model.User user = Provider.of<UserProvider>(context).getUser;
 
     return Scaffold(
       body: Center(
@@ -84,8 +80,6 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     );
   }
 }
-
-
 
 class PomodoroScreen extends StatelessWidget {
   const PomodoroScreen({super.key});
