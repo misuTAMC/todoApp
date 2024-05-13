@@ -3,6 +3,8 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:tinhtoandidong_project/model/user.dart' as model;
 import 'package:tinhtoandidong_project/provider/user_provider.dart';
+import 'package:tinhtoandidong_project/screens/todo_screen.dart';
+import 'package:tinhtoandidong_project/widgets/task.dart';
 
 class MobileScreenLayout extends StatefulWidget {
   const MobileScreenLayout({super.key});
@@ -83,20 +85,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   }
 }
 
-class TodoScreen extends StatelessWidget {
-  const TodoScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.purple.shade100,
-      body: const Center(
-        child: Text('Todo Screen',
-            style: TextStyle(fontSize: 24, color: Colors.black)),
-      ),
-    );
-  }
-}
 
 class PomodoroScreen extends StatelessWidget {
   const PomodoroScreen({super.key});
