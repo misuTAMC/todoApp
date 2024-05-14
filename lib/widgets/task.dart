@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class TaskForm extends StatefulWidget {
@@ -9,169 +11,137 @@ class TaskForm extends StatefulWidget {
 
 class _TaskFormState extends State<TaskForm> {
   bool isDone = false;
+  double opacityValue = 1.0;
+  Color getRandomColor() {
+    return Color.fromARGB(
+      255,
+      128 + Random().nextInt(128), // Red value will be between 128 and 255
+      128 + Random().nextInt(128), // Green value will be between 128 and 255
+      128 + Random().nextInt(128), // Blue value will be between 128 and 255
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-      child: Container(
-        width: double.infinity,
-        height: 130,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.purple.shade300,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: const Offset(0, 2),
-            )
-          ],
-        ),
-        child: Row(
-          children: [
-            const SizedBox(width: 20),
-            //todo: add image
-            Container(
-              height: 130,
-              width: 100,
-              decoration: const BoxDecoration(
-                shape: BoxShape.rectangle,
-                color: Colors.white,
-                image: DecorationImage(
-                  image: AssetImage(
-                    'assets/tree grows/1.png',
-                  ),
-                  fit: BoxFit.contain,
+    return AnimatedOpacity(
+      opacity: opacityValue,
+      duration: const Duration(seconds: 1),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+        child: Transform(
+          transform: Matrix4.rotationZ(-0.05), // slight tilt to the left
+          origin: const Offset(50, 50),
+          child: Container(
+            width: 250,
+            height: 350,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(40),
+              color: getRandomColor(),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(-5, 0),
                 ),
-              ),
+              ],
             ),
-            const SizedBox(width: 20),
-            //todo:title and subtitle
-
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Row(
+              children: [
+                const SizedBox(width: 20),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const SizedBox(height: 5),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Title',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Checkbox(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            side: const BorderSide(color: Colors.black),
+                            checkColor: Colors.green,
+                            activeColor: Colors.black,
+                            fillColor: MaterialStateProperty.all(Colors.white),
+                            value: isDone,
+                            onChanged: (value) {
+                              setState(() {
+                                isDone = !isDone;
+                                opacityValue = isDone ? 0.0 : 1.0;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                       const Text(
-                        'title',
+                        'Subtitle',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
-                      Checkbox(
-                          value: isDone,
-                          onChanged: (value) {
-                            setState(() {
-                              isDone = !isDone;
-                            });
-                          })
+                      const SizedBox(height: 230),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(width: 15),
+                          Container(
+                            padding: const EdgeInsets.only(
+                                left: 15, right: 15, top: 5, bottom: 5),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                            ),
+                            child: const Text(
+                              'Time',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Container(
+                            padding: const EdgeInsets.only(
+                                left: 20, right: 20, top: 5, bottom: 5),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                            ),
+                            child: const Text(
+                              'Edit',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    'subtitle',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey.shade400,
-                    ),
-                  ),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 90,
-                          height: 28,
-                          decoration: BoxDecoration(
-                            color: Colors.green.shade100,
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.timer,
-                                  color: Colors.black,
-                                  size: 16,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  'time',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Container(
-                          width: 90,
-                          height: 28,
-                          decoration: BoxDecoration(
-                            color: Colors.green.shade50,
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.edit,
-                                  color: Colors.black,
-                                  size: 16,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  'edit',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
