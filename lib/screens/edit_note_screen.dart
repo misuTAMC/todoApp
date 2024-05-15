@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:tinhtoandidong_project/resources/storage_method.dart';
+
 
 //https://drive.google.com/drive/folders/1DpJeQ97lwyMo4VxTzYNUEqr16L-X9Gdz?fbclid=IwZXh0bgNhZW0CMTAAAR1xmorck_jAF-peNLS8oU5exdEgIsLlRblBuJIWbckZtkRpBVRcuUaC6S4_aem_ATQlz_nzihR2RCuwAwHyAuYtvl963za-t-EOIbwawI7W1S_npKWroi1Ghj2qGhFocwEzL1WCb7AiV6zy-xWYMgwl
-class AddNote extends StatefulWidget {
-  const AddNote({super.key});
+class EditNote extends StatefulWidget {
+  const EditNote({super.key});
 
   @override
-  State<AddNote> createState() => _AddNoteState();
+  State<EditNote> createState() => _EditNoteState();
 }
 
-class _AddNoteState extends State<AddNote> {
+class _EditNoteState extends State<EditNote> {
   final title = TextEditingController();
   final subtitle = TextEditingController();
 
@@ -49,7 +49,7 @@ class _AddNoteState extends State<AddNote> {
             minimumSize: const Size(170, 48),
           ),
           onPressed: () {
-            StorageMethod().addTask(subtitle.text, title.text, indexx);
+            
             Navigator.pop(context);
           },
           child: const Text(

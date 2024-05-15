@@ -42,7 +42,7 @@ class AuthMethods {
           uid: userCredential.user!.uid,
           username: username,
           phone: phone,
-          favorite: [],
+          task: [],
           photoUrl: photoUrl,
         );
         //*add user to firestore

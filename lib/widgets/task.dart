@@ -1,9 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:tinhtoandidong_project/model/note.dart';
+import 'package:tinhtoandidong_project/screens/edit_note_screen.dart';
 
 class TaskForm extends StatefulWidget {
-  const TaskForm({super.key});
+  final Note _note;
+
+  const TaskForm(this._note, {super.key});
 
   @override
   State<TaskForm> createState() => _TaskFormState();
@@ -12,134 +16,138 @@ class TaskForm extends StatefulWidget {
 class _TaskFormState extends State<TaskForm> {
   bool isDone = false;
   double opacityValue = 1.0;
+
   Color getRandomColor() {
     return Color.fromARGB(
       255,
-      128 + Random().nextInt(128), // Red value will be between 128 and 255
-      128 + Random().nextInt(128), // Green value will be between 128 and 255
-      128 + Random().nextInt(128), // Blue value will be between 128 and 255
+      128 + Random().nextInt(120), // Red value will be between 128 and 255
+      128 + Random().nextInt(120), // Green value will be between 128 và 255
+      128 + Random().nextInt(120), // Blue value will be between 128 và 255
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      opacity: opacityValue,
-      duration: const Duration(seconds: 1),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-        child: Transform(
-          transform: Matrix4.rotationZ(-0.05), // slight tilt to the left
-          origin: const Offset(50, 50),
-          child: Container(
-            width: 250,
-            height: 350,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(40),
-              color: getRandomColor(),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: const Offset(-5, 0),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                const EditNote(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              var begin = const Offset(1.0, -1.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+
+              var tween =
+                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+              return SlideTransition(
+                position: animation.drive(tween),
+                child: child,
+              );
+            },
+            transitionDuration:
+                const Duration(seconds: 2), // Thời gian hiệu ứng là 2 giây
+          ),
+        );
+      },
+      child: AnimatedOpacity(
+        opacity: opacityValue,
+        duration: const Duration(seconds: 1),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+          child: Transform.rotate(
+            angle: -0.05,
+            child: Container(
+              width: 220,
+
+              margin: const EdgeInsets.only(bottom: 10), // Adjust margin here
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.circular(40),
+                color: getRandomColor(),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(-5, 0),
+                  ),
+                ],
+                image: DecorationImage(
+                  image:
+                      AssetImage('assets/taskPicture/${widget._note.type}.png'),
+                  fit: BoxFit.cover,
+                  opacity: 0.5,
                 ),
-              ],
-            ),
-            child: Row(
-              children: [
-                const SizedBox(width: 20),
-                const SizedBox(width: 20),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 5),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Title',
-                            style: TextStyle(
-                              fontSize: 18,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '#${widget._note.title}',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
                           ),
-                          Checkbox(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            side: const BorderSide(color: Colors.black),
-                            checkColor: Colors.green,
-                            activeColor: Colors.black,
-                            fillColor: MaterialStateProperty.all(Colors.white),
-                            value: isDone,
-                            onChanged: (value) {
-                              setState(() {
+                        ),
+                        Checkbox(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          side: const BorderSide(color: Colors.black),
+                          checkColor: Colors.green,
+                          activeColor: Colors.black,
+                          fillColor: MaterialStateProperty.all(Colors.white),
+                          value: isDone,
+                          onChanged: (value) {
+                            setState(
+                              () {
                                 isDone = !isDone;
                                 opacityValue = isDone ? 0.0 : 1.0;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      const Text(
-                        'Subtitle',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                              },
+                            );
+                          },
                         ),
+                      ],
+                    ),
+                    const Divider(
+                      color: Colors.black,
+                      thickness: 1,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      widget._note.subTitle,
+                      maxLines: 6,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
-                      const SizedBox(height: 230),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(width: 15),
-                          Container(
-                            padding: const EdgeInsets.only(
-                                left: 15, right: 15, top: 5, bottom: 5),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              border: Border.all(),
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
-                            ),
-                            child: const Text(
-                              'Time',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Container(
-                            padding: const EdgeInsets.only(
-                                left: 20, right: 20, top: 5, bottom: 5),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              border: Border.all(),
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
-                            ),
-                            child: const Text(
-                              'Edit',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                    ),
+                    // Expanded(
+                    //   child: Image(
+                    //     image: AssetImage(
+                    //         'assets/taskPicture/${widget._note.type}.png'),
+                    //   ),
+                    // ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

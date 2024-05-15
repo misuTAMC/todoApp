@@ -44,6 +44,8 @@ dependencies:
   provider: ^6.1.2
   msh_checkbox: ^2.0.1
   google_nav_bar: ^5.0.6
+  uuid: ^4.4.0
+  page_transition: ^2.1.0
 
 dev_dependencies:
   flutter_test:

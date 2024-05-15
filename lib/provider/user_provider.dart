@@ -14,7 +14,7 @@ class UserProvider with ChangeNotifier {
           uid: '',
           username: '',
           phone: '',
-          favorite: [],
+          task: [],
           photoUrl: '');
 
   Future<void> refreshUser() async {

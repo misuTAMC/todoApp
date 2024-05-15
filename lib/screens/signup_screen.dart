@@ -51,14 +51,14 @@ class _SignupScreenState extends State<SignupScreen>
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    _controller.dispose();
     //dispose controllers
     _emailController.dispose();
     _passwordController.dispose();
     _usernameController.dispose();
     _phoneController.dispose();
+    // TODO: implement dispose
+    _controller.dispose();
+    super.dispose();
   }
 
   void _checkIfFilled() {
@@ -93,7 +93,7 @@ class _SignupScreenState extends State<SignupScreen>
       password: _passwordController.text,
       username: _usernameController.text,
       phone: _phoneController.text,
-      file: _image!,
+      file: _image ?? Uint8List(0),
     );
     print(res);
 
