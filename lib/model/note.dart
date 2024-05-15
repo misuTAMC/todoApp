@@ -4,13 +4,13 @@ class Note {
   String title;
   String time;
   int type;
-  bool isDon;
+  bool isDone;
   Note(
     this.id,
     this.subTitle,
     this.time,
     this.type,
     this.title,
-    this.isDon,
+    this.isDone,
   );
 }

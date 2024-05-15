@@ -86,4 +86,53 @@ class StorageMethod {
         .collection('tasks')
         .snapshots();
   }
+
+  Future<bool> isDoneTask(String id, bool isDone) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(_firebaseAuth.currentUser!.uid)
+          .collection('tasks')
+          .doc(id)
+          .update({
+        'isDone': isDone,
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> updateTask(
+      String id, int type, String title, String subTitle) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(_firebaseAuth.currentUser!.uid)
+          .collection('tasks')
+          .doc(id)
+          .update({
+        'type': type,
+        'title': title,
+        'subTitle': subTitle,
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteTask(String id) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(_firebaseAuth.currentUser!.uid)
+          .collection('tasks')
+          .doc(id)
+          .delete();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

@@ -1,21 +1,31 @@
 import 'package:flutter/material.dart';
-
+import 'package:tinhtoandidong_project/model/note.dart';
+import 'package:tinhtoandidong_project/resources/storage_method.dart';
 
 //https://drive.google.com/drive/folders/1DpJeQ97lwyMo4VxTzYNUEqr16L-X9Gdz?fbclid=IwZXh0bgNhZW0CMTAAAR1xmorck_jAF-peNLS8oU5exdEgIsLlRblBuJIWbckZtkRpBVRcuUaC6S4_aem_ATQlz_nzihR2RCuwAwHyAuYtvl963za-t-EOIbwawI7W1S_npKWroi1Ghj2qGhFocwEzL1WCb7AiV6zy-xWYMgwl
 class EditNote extends StatefulWidget {
-  const EditNote({super.key});
+  final Note _note;
+  const EditNote(this._note, {super.key});
 
   @override
   State<EditNote> createState() => _EditNoteState();
 }
 
 class _EditNoteState extends State<EditNote> {
-  final title = TextEditingController();
-  final subtitle = TextEditingController();
+  TextEditingController? title;
+  TextEditingController? subTitle;
 
   final FocusNode _focusNode1 = FocusNode();
   final FocusNode _focusNode2 = FocusNode();
   int indexx = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    title = TextEditingController(text: widget._note.title);
+    subTitle = TextEditingController(text: widget._note.subTitle);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,11 +59,12 @@ class _EditNoteState extends State<EditNote> {
             minimumSize: const Size(170, 48),
           ),
           onPressed: () {
-            
+            StorageMethod().updateTask(
+                widget._note.id, indexx, title!.text, subTitle!.text);
             Navigator.pop(context);
           },
           child: const Text(
-            'Add',
+            'Done',
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.w500,
@@ -193,7 +204,7 @@ class _EditNoteState extends State<EditNote> {
         ),
         child: TextField(
           maxLines: 3,
-          controller: subtitle,
+          controller: subTitle,
           focusNode: _focusNode2,
           style: const TextStyle(fontSize: 18, color: Colors.black),
           decoration: InputDecoration(

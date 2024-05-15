@@ -73,7 +73,7 @@ flutter:
   assets:
     - assets/profiles/
     - assets/logos/
-    - assets/tree grows/
+   
     - assets/taskPicture/
     - assets/
     

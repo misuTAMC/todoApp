@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:tinhtoandidong_project/model/note.dart';
+import 'package:tinhtoandidong_project/resources/storage_method.dart';
 import 'package:tinhtoandidong_project/screens/edit_note_screen.dart';
 
 class TaskForm extends StatefulWidget {
@@ -13,9 +14,25 @@ class TaskForm extends StatefulWidget {
   State<TaskForm> createState() => _TaskFormState();
 }
 
-class _TaskFormState extends State<TaskForm> {
-  bool isDone = false;
+class _TaskFormState extends State<TaskForm>
+    with SingleTickerProviderStateMixin {
   double opacityValue = 1.0;
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   Color getRandomColor() {
     return Color.fromARGB(
@@ -28,31 +45,34 @@ class _TaskFormState extends State<TaskForm> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDone = widget._note.isDone;
+    int typeSave = widget._note.type;
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const EditNote(),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              var begin = const Offset(1.0, -1.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
+        widget._note.type == 100
+            ? null
+            : Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      EditNote(widget._note),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    var begin = const Offset(1.0, -1.0);
+                    var end = Offset.zero;
+                    var curve = Curves.ease;
 
-              var tween =
-                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                    var tween = Tween(begin: begin, end: end)
+                        .chain(CurveTween(curve: curve));
 
-              return SlideTransition(
-                position: animation.drive(tween),
-                child: child,
+                    return SlideTransition(
+                      position: animation.drive(tween),
+                      child: child,
+                    );
+                  },
+                  transitionDuration: const Duration(seconds: 2),
+                ),
               );
-            },
-            transitionDuration:
-                const Duration(seconds: 2), // Thời gian hiệu ứng là 2 giây
-          ),
-        );
       },
       child: AnimatedOpacity(
         opacity: opacityValue,
@@ -81,7 +101,7 @@ class _TaskFormState extends State<TaskForm> {
                   image:
                       AssetImage('assets/taskPicture/${widget._note.type}.png'),
                   fit: BoxFit.cover,
-                  opacity: 0.5,
+                  opacity: 0.2,
                 ),
               ),
               child: Padding(
@@ -104,24 +124,61 @@ class _TaskFormState extends State<TaskForm> {
                             ),
                           ),
                         ),
-                        Checkbox(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          side: const BorderSide(color: Colors.black),
-                          checkColor: Colors.green,
-                          activeColor: Colors.black,
-                          fillColor: MaterialStateProperty.all(Colors.white),
-                          value: isDone,
-                          onChanged: (value) {
-                            setState(
-                              () {
-                                isDone = !isDone;
-                                opacityValue = isDone ? 0.0 : 1.0;
-                              },
-                            );
-                          },
-                        ),
+                        widget._note.type == 100
+                            ? Row(
+                                children: [
+                                  const Icon(
+                                    Icons.check,
+                                    color: Colors.green,
+                                  ),
+                                  //todo:delete task
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.auto_delete_outlined,
+                                      color: Colors.black,
+                                    ),
+                                    onPressed: () {
+                                      StorageMethod()
+                                          .deleteTask(widget._note.id);
+                                    },
+                                  ),
+                                ],
+                              )
+                            : Checkbox(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                side: const BorderSide(color: Colors.black),
+                                checkColor: Colors.green,
+                                activeColor: Colors.black,
+                                fillColor:
+                                    MaterialStateProperty.all(Colors.white),
+                                value: isDone,
+                                onChanged: (value) {
+                                  setState(
+                                    () {
+                                      isDone = !isDone;
+                                      opacityValue = isDone ? 0.0 : 1.0;
+                                      if (isDone == true) {
+                                        typeSave = widget._note.type;
+                                        widget._note.type = 100;
+                                      }
+                                    },
+                                  );
+                                  StorageMethod()
+                                      .isDoneTask(widget._note.id, isDone);
+                                  if (isDone == true) {
+                                    StorageMethod().updateTask(
+                                        widget._note.id,
+                                        widget._note.type,
+                                        widget._note.title,
+                                        widget._note.subTitle);
+                                  }
+                                  if (isDone == false) {
+                                    widget._note.type = typeSave;
+                                  }
+                                },
+                              ),
                       ],
                     ),
                     const Divider(

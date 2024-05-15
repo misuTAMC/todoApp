@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:tinhtoandidong_project/resources/auth_method.dart';
 import 'package:tinhtoandidong_project/resources/storage_method.dart';
 import 'package:tinhtoandidong_project/screens/add_note_screen.dart';
 import 'package:tinhtoandidong_project/widgets/task.dart';
@@ -8,7 +9,7 @@ class TodoScreen extends StatefulWidget {
   const TodoScreen({super.key});
 
   @override
-  _TodoScreenState createState() => _TodoScreenState();
+  State<TodoScreen> createState() => _TodoScreenState();
 }
 
 class _TodoScreenState extends State<TodoScreen> {
@@ -40,6 +41,7 @@ class _TodoScreenState extends State<TodoScreen> {
                     width: 40.0,
                     height: 40.0,
                     child: FloatingActionButton(
+                      heroTag: 'addNote',
                       shape: const RoundedRectangleBorder(
                         side: BorderSide(),
                         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -75,6 +77,38 @@ class _TodoScreenState extends State<TodoScreen> {
                     ),
                   ),
                   const SizedBox(width: 20),
+                  SizedBox(
+                    width: 40.0,
+                    height: 40.0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.black, // Set border color
+                          width: 1.2, // Set border width
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5), // Set color
+                            spreadRadius: 2, // Set spread radius
+                            blurRadius: 5, // Set blur radius
+                            offset: const Offset(-1, 3), // Set offset
+                          ),
+                        ], // Set border radius
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          AuthMethods().signOut();
+                        },
+                        icon: const Icon(
+                          Icons.logout_outlined,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
                 ],
               ),
               const SizedBox(height: 20),
@@ -82,6 +116,7 @@ class _TodoScreenState extends State<TodoScreen> {
               _buildTaskListByType(1),
               _buildTaskListByType(2),
               _buildTaskListByType(3),
+              _buildTaskListByType(100),
             ],
           ),
         ),
@@ -96,12 +131,14 @@ class _TodoScreenState extends State<TodoScreen> {
         const SizedBox(height: 20),
         Text(
           type == 0
-              ? '#Study '
+              ? '  #Study'
               : type == 1
-                  ? '#Healthy  '
+                  ? '  #Healthy'
                   : type == 2
-                      ? '#Work'
-                      : '#Other ',
+                      ? '  #Work'
+                      : type == 3
+                          ? '  #Others'
+                          : '  #Done',
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -116,7 +153,7 @@ class _TodoScreenState extends State<TodoScreen> {
         ),
         const SizedBox(height: 20),
         SizedBox(
-          height: 300, // Specify height for the horizontal ListView
+          height: 300,
           child: StreamBuilder<QuerySnapshot>(
             stream: StorageMethod().streamTask(),
             builder: (context, snapshot) {
@@ -131,8 +168,16 @@ class _TodoScreenState extends State<TodoScreen> {
                 );
               }
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return const Center(
-                  child: Text('No tasks found.'),
+                return Center(
+                  child: type != 100
+                      ? const Image(
+                          image: AssetImage(
+                            'assets/taskPicture/empty.png',
+                          ),
+                          fit: BoxFit.contain,
+                          opacity: AlwaysStoppedAnimation(0.5),
+                        )
+                      : const SizedBox(),
                 );
               }
 
@@ -140,16 +185,19 @@ class _TodoScreenState extends State<TodoScreen> {
               final filteredTasks =
                   taskList.where((task) => task.type == type).toList();
 
-              return ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: filteredTasks.length,
-                itemBuilder: (context, index) {
-                  final task = filteredTasks[index];
-                  return Transform.translate(
-                    offset: Offset(index * -40.0, 0),
-                    child: TaskForm(task),
-                  );
-                },
+              return Hero(
+                tag: 'taskList',
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: filteredTasks.length,
+                  itemBuilder: (context, index) {
+                    final task = filteredTasks[index];
+                    return Transform.translate(
+                      offset: Offset(index * -40.0, 0),
+                      child: TaskForm(task),
+                    );
+                  },
+                ),
               );
             },
           ),
