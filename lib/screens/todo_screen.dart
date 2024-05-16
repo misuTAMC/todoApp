@@ -41,7 +41,6 @@ class _TodoScreenState extends State<TodoScreen> {
                     width: 40.0,
                     height: 40.0,
                     child: FloatingActionButton(
-                      heroTag: 'addNote',
                       shape: const RoundedRectangleBorder(
                         side: BorderSide(),
                         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -185,19 +184,16 @@ class _TodoScreenState extends State<TodoScreen> {
               final filteredTasks =
                   taskList.where((task) => task.type == type).toList();
 
-              return Hero(
-                tag: 'taskList',
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: filteredTasks.length,
-                  itemBuilder: (context, index) {
-                    final task = filteredTasks[index];
-                    return Transform.translate(
-                      offset: Offset(index * -40.0, 0),
-                      child: TaskForm(task),
-                    );
-                  },
-                ),
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: filteredTasks.length,
+                itemBuilder: (context, index) {
+                  final task = filteredTasks[index];
+                  return Transform.translate(
+                    offset: Offset(index * -40.0, 0),
+                    child: TaskForm(task),
+                  );
+                },
               );
             },
           ),

@@ -3,10 +3,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:tinhtoandidong_project/resources/auth_method.dart';
+import 'package:tinhtoandidong_project/responsive/mobile_screen_layout.dart';
 import 'package:tinhtoandidong_project/responsive/responsive_layout_screen.dart';
 import 'package:tinhtoandidong_project/responsive/web_screen.layout.dart';
 import 'package:tinhtoandidong_project/screens/signup_screen.dart';
-import 'package:tinhtoandidong_project/screens/todo_screen.dart';
 import 'package:tinhtoandidong_project/utils/utils.dart';
 import 'package:tinhtoandidong_project/widgets/logo_app.dart';
 import 'package:tinhtoandidong_project/widgets/text_field_input.dart';
@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(
           builder: (context) => const ResponsiveLayout(
             webScreenLayout: WebScreenLayout(),
-            mobileScreenLayout: TodoScreen(),
+            mobileScreenLayout: MobileScreenLayout(),
           ),
         ),
       );
