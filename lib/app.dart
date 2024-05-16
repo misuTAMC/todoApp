@@ -4,9 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:tinhtoandidong_project/provider/user_provider.dart';
 import 'package:tinhtoandidong_project/responsive/responsive_layout_screen.dart';
 import 'package:tinhtoandidong_project/responsive/web_screen.layout.dart';
-
+import 'package:tinhtoandidong_project/screens/banner_screen.dart';
 import 'package:tinhtoandidong_project/screens/login_screen.dart';
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -36,7 +35,7 @@ class MyApp extends StatelessWidget {
               if (snapshot.hasData) {
                 return const ResponsiveLayout(
                   webScreenLayout: WebScreenLayout(),
-                  mobileScreenLayout: LoginScreen(),
+                  mobileScreenLayout: BannerScreen(),
                 );
                 //*bat loi
               } else if (snapshot.hasError) {

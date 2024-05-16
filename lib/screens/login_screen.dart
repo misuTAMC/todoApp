@@ -142,8 +142,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           SizedBox(height: 10),
                           Text(
-                            'Don\'t read this. It\'s just a dummy text. But if you are reading this, then you are wasting your time. So stop reading this and sign up now!.Don\'t read this. It\'s just a dummy text. But if you are reading this, then you are wasting your time. So stop reading this and sign up now!',
-                            maxLines: 15,
+                            'Don\'t read this. It\'s just a dummy text. But if you are reading this, then you are wasting your time. So stop reading this and sign up now!.',
+                            maxLines: 16,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 15,
@@ -214,7 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           SizedBox(height: 10),
                           Text(
-                            'Don\'t read this. It\'s just a dummy text. But if you are reading this, then you are wasting your time. So stop reading this and sign up now!.Don\'t read this. It\'s just a dummy text. But if you are reading this, then you are wasting your time. So stop reading this and sign up now!',
+                            'Don\'t read this. It\'s just a dummy text. But if you are reading this, then you are wasting your time. So stop reading this and sign up now!.',
                             maxLines: 15,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
