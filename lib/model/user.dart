@@ -5,15 +5,15 @@ class User {
   final String uid;
   final String username;
   final String phone;
-  final List task;
-  final String photoUrl;
+  
+  
   User({
     required this.email,
     required this.uid,
-    required this.photoUrl,
+    
     required this.username,
     required this.phone,
-    required this.task,
+    
   });
   Map<String, dynamic> toJson() {
     return {
@@ -21,8 +21,8 @@ class User {
       'uid': uid,
       'username': username,
       'phone': phone,
-      'task': task,
-      'photoUrl': photoUrl,
+      
+      
     };
   }
 
@@ -35,8 +35,8 @@ class User {
       uid: snapshotAssignment['uid'] as String? ?? '',
       username: snapshotAssignment['username'] as String? ?? '',
       phone: snapshotAssignment['phone'] as String? ?? '',
-      task: snapshotAssignment['task'] as List? ?? [],
-      photoUrl: snapshotAssignment['photoUrl'] as String? ?? '',
+     
+      
     );
   }
 }

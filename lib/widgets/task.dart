@@ -37,9 +37,9 @@ class _TaskFormState extends State<TaskForm>
   Color getRandomColor() {
     return Color.fromARGB(
       255,
-      128 + Random().nextInt(120), // Red value will be between 128 and 255
-      128 + Random().nextInt(120), // Green value will be between 128 và 255
-      128 + Random().nextInt(120), // Blue value will be between 128 và 255
+      200 + Random().nextInt(56),
+      200 + Random().nextInt(56),
+      200 + Random().nextInt(56),
     );
   }
 

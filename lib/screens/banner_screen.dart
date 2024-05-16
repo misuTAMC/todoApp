@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:tinhtoandidong_project/screens/login_screen.dart';
 
 class BannerScreen extends StatefulWidget {
   const BannerScreen({super.key});
@@ -15,91 +16,282 @@ class _BannerScreenState extends State<BannerScreen> {
   Color getRandomColor() {
     return Color.fromARGB(
       255,
-      128 + Random().nextInt(120), // Red value will be between 128 and 255
-      128 + Random().nextInt(120), // Green value will be between 128 và 255
-      128 + Random().nextInt(120), // Blue value will be between 128 và 255
+      200 + Random().nextInt(56), // Red value will be between 128 and 255
+      200 + Random().nextInt(56), // Green value will be between 128 và 255
+      200 + Random().nextInt(56), // Blue value will be between 128 và 255
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      child: AnimatedOpacity(
-        opacity: opacityValue,
-        duration: const Duration(seconds: 1),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          child: Transform.rotate(
-            angle: -0.05,
-            child: Container(
-              width: 220,
-              margin: const EdgeInsets.only(bottom: 10), // Adjust margin here
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.circular(40),
-                color: getRandomColor(),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: const Offset(-5, 0),
-                  ),
-                ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: GestureDetector(
+        onTap: () {
+          setState(() {
+            opacityValue = opacityValue == 1.0 ? 0.0 : 1.0;
+          });
+          Future.delayed(const Duration(seconds: 5), () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const LoginScreen(),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            );
+          });
+        },
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            const SizedBox(height: 10),
+            Positioned(
+              top: 10,
+              child: AnimatedOpacity(
+                opacity: opacityValue,
+                duration: const Duration(seconds: 1),
+                child: Row(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Expanded(
-                          child: Text(
-                            '#Title',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
+                    const SizedBox(width: 20),
+                    Container(
+                      alignment: Alignment.center,
+                      height: 400,
+                      width: 300,
+                      child: const Text(
+                        'You suck at taking notes brother,you need us :)',
+                        style: TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.w300,
+                          color: Colors.black,
                         ),
-                        Checkbox(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          side: const BorderSide(color: Colors.black),
-                          checkColor: Colors.green,
-                          activeColor: Colors.black,
-                          fillColor: MaterialStateProperty.all(Colors.white),
-                          value: false,
-                          onChanged: (value) {},
-                        ),
-                      ],
-                    ),
-                    const Divider(
-                      color: Colors.black,
-                      thickness: 1,
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Subtitle',
-                      maxLines: 6,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-          ),
+            Positioned(
+              top: 500,
+              left: 260,
+              child: AnimatedOpacity(
+                opacity: opacityValue,
+                duration: const Duration(seconds: 2),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  child: Transform.rotate(
+                    angle: 0.2,
+                    child: Container(
+                      width: 300,
+                      height: 350,
+                      margin: const EdgeInsets.only(
+                          bottom: 10), // Adjust margin here
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(40),
+                        color: getRandomColor(),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(-5, 0),
+                          ),
+                        ],
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    '#We\'ve got your back!',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Divider(
+                              color: Colors.black,
+                              thickness: 1,
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              'We know that studying can be tough, but we are here to help. Our team of experts will help you with everything from choosing the right course to finding the best study materials. So what are you waiting for? Sign up now and start your journey to success!',
+                              maxLines: 15,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 400,
+              left: 50,
+              child: AnimatedOpacity(
+                opacity: opacityValue,
+                duration: const Duration(seconds: 3),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  child: Transform.rotate(
+                    angle: -0.2,
+                    child: Container(
+                      width: 300,
+                      height: 350,
+                      margin: const EdgeInsets.only(
+                          bottom: 10), // Adjust margin here
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(40),
+                        color: getRandomColor(),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(-5, 0),
+                          ),
+                        ],
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    '#Not sure where to start? Tap here!',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Divider(
+                              color: Colors.black,
+                              thickness: 1,
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              'Don\'t worry, we got you covered. Our team of experts will help you get started on your journey to success. We will help you with everything from choosing the right course to finding the best study materials. So what are you waiting for? Sign up now and start your journey to success!',
+                              maxLines: 15,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 600,
+              left: 200,
+              child: AnimatedOpacity(
+                opacity: opacityValue,
+                duration: const Duration(seconds: 4),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  child: Transform.rotate(
+                    angle: -0.1,
+                    child: Container(
+                      width: 300,
+                      height: 350,
+                      margin: const EdgeInsets.only(
+                          bottom: 10), // Adjust margin here
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(40),
+                        color: getRandomColor(),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(-5, 0),
+                          ),
+                        ],
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    '#Start on your day on a positive note!',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Divider(
+                              color: Colors.black,
+                              thickness: 1,
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              'Good habits are as addictive as bad habits, but much more rewarding. Start your day on a positive note with our team of experts. We will help you get started on your journey to success. So what are you waiting for? Sign up now and start your journey to success!',
+                              maxLines: 15,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

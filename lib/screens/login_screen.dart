@@ -1,11 +1,12 @@
 // ignore_for_file: avoid_print
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:tinhtoandidong_project/constant.dart';
 import 'package:tinhtoandidong_project/resources/auth_method.dart';
-import 'package:tinhtoandidong_project/responsive/mobile_screen_layout.dart';
 import 'package:tinhtoandidong_project/responsive/responsive_layout_screen.dart';
 import 'package:tinhtoandidong_project/responsive/web_screen.layout.dart';
 import 'package:tinhtoandidong_project/screens/signup_screen.dart';
+import 'package:tinhtoandidong_project/screens/todo_screen.dart';
 import 'package:tinhtoandidong_project/utils/utils.dart';
 import 'package:tinhtoandidong_project/widgets/logo_app.dart';
 import 'package:tinhtoandidong_project/widgets/text_field_input.dart';
@@ -17,52 +18,24 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>
-    with SingleTickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isFilled = false;
   bool _isLoading = false;
-  //*animate :>>
-  late Animation<Alignment> _topAlignmentAnimation;
-  late Animation<Alignment> _bottomAlignmentAnimation;
-  late AnimationController _controller;
-  @override
-  void initState() {
-    super.initState();
-    //*_controller:is the AnimationController that controls the animation
-    _controller = AnimationController(
-      //*vsync:is the TickerProvider that the AnimationController will use
-      vsync: this,
-      duration: const Duration(seconds: 4),
-    );
-
-    _topAlignmentAnimation = setupTopAlignmentAnimation(_controller);
-    _bottomAlignmentAnimation = setupBottomAlignmentAnimation(_controller);
-
-    _controller.repeat();
-  }
-
+  double opacityValue = 1.0;
   @override
   void dispose() {
-    // TODO: implement dispose
-    _controller.dispose();
-    super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    super.dispose();
   }
 
   void _checkIfFilled() {
-    if (_emailController.text.isNotEmpty &&
-        _passwordController.text.isNotEmpty) {
-      setState(() {
-        _isFilled = true;
-      });
-    } else {
-      setState(() {
-        _isFilled = false;
-      });
-    }
+    setState(() {
+      _isFilled = _emailController.text.isNotEmpty &&
+          _passwordController.text.isNotEmpty;
+    });
   }
 
   void loginUser() async {
@@ -79,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen>
         MaterialPageRoute(
           builder: (context) => const ResponsiveLayout(
             webScreenLayout: WebScreenLayout(),
-            mobileScreenLayout: MobileScreenLayout(),
+            mobileScreenLayout: TodoScreen(),
           ),
         ),
       );
@@ -92,6 +65,15 @@ class _LoginScreenState extends State<LoginScreen>
     });
   }
 
+  Color getRandomColor() {
+    return Color.fromARGB(
+      255,
+      200 + Random().nextInt(56), // Red value will be between 200 and 255
+      200 + Random().nextInt(56), // Green value will be between 200 and 255
+      200 + Random().nextInt(56), // Blue value will be between 200 and 255
+    );
+  }
+
   void navigatorToSignup() {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return const SignupScreen();
@@ -101,129 +83,252 @@ class _LoginScreenState extends State<LoginScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            return Container(
-              width: double.maxFinite,
-              height: double.maxFinite,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.blue.shade50,
-                    Colors.pink.shade50,
-                  ],
-                  begin: _topAlignmentAnimation.value,
-                  end: _bottomAlignmentAnimation.value,
-                ),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      flex: 2,
-                      child: Container(),
-                    ),
-                    //todo: logo
-                    const LogoApp(),
-                    //todo: title
-
-                    //todo:field email
-                    const SizedBox(height: 10),
-                    TextFieldInput(
-                      onChanged: (value) => _checkIfFilled(),
-                      textEditingController: _emailController,
-                      hintText: 'Enter your email',
-                      textInputType: TextInputType.emailAddress,
-                      fillColor: const Color.fromARGB(163, 24, 24, 0),
-                    ),
-                    //todo: field password
-                    const SizedBox(height: 16),
-                    TextFieldInput(
-                        onChanged: (value) => _checkIfFilled(),
-                        textEditingController: _passwordController,
-                        hintText: 'Enter your password',
-                        textInputType: TextInputType.visiblePassword,
-                        fillColor: const Color.fromARGB(163, 24, 24, 0),
-                        isPass: true),
-
-                    //todo: button login
-                    const SizedBox(height: 16),
-                    InkWell(
-                      onTap: _isFilled ? loginUser : null,
-                      child: AnimatedOpacity(
-                        opacity: _isFilled ? 1 : 0,
-                        duration: const Duration(milliseconds: 500),
-                        child: Container(
-                          width: 150,
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          decoration: const ShapeDecoration(
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(40)),
-                            ),
-                            color: Color.fromARGB(163, 24, 24, 0),
-                          ),
-                          child: _isLoading
-                              ? const Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Text(
-                                  'Log in',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
+      backgroundColor: Colors.white,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned(
+            top: 600,
+            left: 200,
+            child: AnimatedOpacity(
+              opacity: opacityValue,
+              duration: const Duration(seconds: 2),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                child: Transform.rotate(
+                  angle: 0.2,
+                  child: Container(
+                    width: 300,
+                    height: 350,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(40),
+                      color: getRandomColor(),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: const Offset(-5, 0),
                         ),
-                      ),
-                    ),
-
-                    Flexible(
-                      flex: 2,
-                      child: Container(),
-                    ), //todo: button sign up
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Text(
-                            'Don\'t have an account yet?',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.red.shade900,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: GestureDetector(
-                            onTap: navigatorToSignup,
-                            child: Text(
-                              ' Sign up',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.pink.shade900,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        )
                       ],
                     ),
-                  ],
+                    child: const Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'Today is a new day!',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Divider(
+                            color: Colors.black,
+                            thickness: 1,
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'Don\'t read this. It\'s just a dummy text. But if you are reading this, then you are wasting your time. So stop reading this and sign up now!.Don\'t read this. It\'s just a dummy text. But if you are reading this, then you are wasting your time. So stop reading this and sign up now!',
+                            maxLines: 15,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            );
-          }),
+            ),
+          ),
+          Positioned(
+            top: 450,
+            left: 50,
+            child: AnimatedOpacity(
+              opacity: opacityValue,
+              duration: const Duration(seconds: 4),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                child: Transform.rotate(
+                  angle: -0.1,
+                  child: Container(
+                    width: 300,
+                    height: 350,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(40),
+                      color: getRandomColor(),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: const Offset(-5, 0),
+                        ),
+                      ],
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  '#TODO: Add some tasks',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Divider(
+                            color: Colors.black,
+                            thickness: 1,
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'Don\'t read this. It\'s just a dummy text. But if you are reading this, then you are wasting your time. So stop reading this and sign up now!.Don\'t read this. It\'s just a dummy text. But if you are reading this, then you are wasting your time. So stop reading this and sign up now!',
+                            maxLines: 15,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 200),
+                  // Logo
+                  const LogoApp(),
+                  const SizedBox(height: 20),
+                  // Email TextField
+                  TextFieldInput(
+                    onChanged: (value) => _checkIfFilled(),
+                    textEditingController: _emailController,
+                    hintText: 'Enter your email',
+                    textInputType: TextInputType.emailAddress,
+                    fillColor: Colors.white,
+                  ),
+                  const SizedBox(height: 16),
+                  // Password TextField
+                  TextFieldInput(
+                    onChanged: (value) => _checkIfFilled(),
+                    textEditingController: _passwordController,
+                    hintText: 'Enter your password',
+                    textInputType: TextInputType.visiblePassword,
+                    fillColor: Colors.white,
+                    isPass: true,
+                  ),
+                  const SizedBox(height: 16),
+                  // Login Button
+                  InkWell(
+                    onTap: _isFilled ? loginUser : null,
+                    child: AnimatedOpacity(
+                      opacity: _isFilled ? 1 : 0,
+                      duration: const Duration(milliseconds: 500),
+                      child: Container(
+                        width: 150,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: const ShapeDecoration(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(40)),
+                          ),
+                          color: Color.fromARGB(163, 24, 24, 0),
+                        ),
+                        child: _isLoading
+                            ? const Center(
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text(
+                                'Log in',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 320),
+                  // Sign Up Button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: const Text(
+                          'Don\'t have an account yet?',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: GestureDetector(
+                          onTap: navigatorToSignup,
+                          child: const Text(
+                            ' Sign up',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -99,7 +99,7 @@ class _TodoScreenState extends State<TodoScreen> {
                       ),
                       child: IconButton(
                         onPressed: () {
-                          AuthMethods().signOut();
+                          AuthMethods().signOut(context);
                         },
                         icon: const Icon(
                           Icons.logout_outlined,

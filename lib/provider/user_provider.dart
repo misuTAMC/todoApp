@@ -14,8 +14,8 @@ class UserProvider with ChangeNotifier {
           uid: '',
           username: '',
           phone: '',
-          task: [],
-          photoUrl: '');
+          
+        );
 
   Future<void> refreshUser() async {
     User user = await _authMethods.getUserDetails();

@@ -1,10 +1,8 @@
 // ignore_for_file: avoid_print
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
-import 'package:tinhtoandidong_project/resources/storage_method.dart';
+import 'package:flutter/material.dart';
+import 'package:tinhtoandidong_project/screens/login_screen.dart';
 
 import '../model/user.dart' as model;
 
@@ -18,12 +16,9 @@ class AuthMethods {
     required String password,
     required String username,
     required String phone,
-    required Uint8List file,
   }) async {
     String res1 = "Some error occured in dang ky :loi o auth_method.dart";
 
-    String photoUrl =
-        await StorageMethod().uploadImageToStorage('avatar', file, false);
     try {
       if (email.isNotEmpty ||
           password.isNotEmpty ||
@@ -42,8 +37,7 @@ class AuthMethods {
           uid: userCredential.user!.uid,
           username: username,
           phone: phone,
-          task: [],
-          photoUrl: photoUrl,
+          
         );
         //*add user to firestore
         await _firestore
@@ -105,7 +99,12 @@ class AuthMethods {
     return model.User.fromSnap(documentSnapshot);
   }
 
-  Future<void> signOut() async {
+  Future<void> signOut(BuildContext context) async {
     await _auth.signOut();
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginScreen(),
+        ));
   }
 }
