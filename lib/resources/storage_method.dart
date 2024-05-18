@@ -135,4 +135,17 @@ class StorageMethod {
       return false;
     }
   }
+  Future<String> getUserName() async {
+    try {
+      final user = await _firestore
+          .collection('users')
+          .doc(_firebaseAuth.currentUser!.uid)
+          .get();
+      return user.data()!['username'];
+    } catch (e) {
+      return 'User';
+    }
+  }
+
+  
 }

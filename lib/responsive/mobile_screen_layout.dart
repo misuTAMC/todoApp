@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tinhtoandidong_project/screens/pomodoro_screen.dart';
 import 'package:tinhtoandidong_project/screens/todo_screen.dart';
 
 class MobileScreenLayout extends StatefulWidget {
@@ -37,22 +38,4 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   }
 }
 
-class PomodoroScreen extends StatelessWidget {
-  const PomodoroScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.purple.shade100,
-      body: const Center(
-        child: Text(
-          'Pomodoro Screen',
-          style: TextStyle(
-            fontSize: 24,
-            color: Colors.black,
-          ),
-        ),
-      ),
-    );
-  }
-}

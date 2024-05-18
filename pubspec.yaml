@@ -47,6 +47,9 @@ dependencies:
   uuid: ^4.4.0
   page_transition: ^2.1.0
   flutter_launcher_icons: ^0.13.1
+  flutter_hooks: ^0.20.5
+  percent_indicator: ^4.2.3
+  
   
   
   
