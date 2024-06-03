@@ -1,10 +1,8 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:tinhtoandidong_project/provider/time_provider.dart';
 import 'package:tinhtoandidong_project/screens/todo_screen.dart';
-
 import 'package:tinhtoandidong_project/widgets/time_options.dart';
 
 class PomodoroScreen extends StatefulWidget {
@@ -14,9 +12,6 @@ class PomodoroScreen extends StatefulWidget {
 }
 
 class _PomodoroScreenState extends State<PomodoroScreen> {
-  
- 
-
   @override
   Widget build(BuildContext context) {
     final providerControlTime = Provider.of<TimeProvider>(context);
@@ -32,19 +27,6 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
     if (providerControlTime.currentDuration == 0 &&
         providerControlTime.timePlaying == false) {
       providerControlTime.currentDuration = providerControlTime.selectedTime;
-      AwesomeNotifications().dismissAllNotifications();
-
-      // Tạo thông báo
-      AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: 10,
-          channelKey: 'app_notification_channel',
-          title: 'Pikachu go',
-          body: 'Pika pika!',
-          customSound: 'resource://raw/pikachu_sound.wav',
-        ),
-      );
-
       WidgetsBinding.instance.addPostFrameCallback(
         (_) {
           showDialog(
@@ -57,9 +39,6 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
-                      AwesomeNotifications().dismissNotificationsByChannelKey(
-                        'app_notification_channel',
-                      );
                     },
                     child: Image.asset(
                       alignment: Alignment.center,
@@ -83,16 +62,22 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
           );
         },
       );
-
-     
     }
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
         height: double.infinity,
-        decoration:
-            const BoxDecoration(color: Color.fromARGB(255, 190, 230, 247)),
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 190, 230, 247),
+          image: DecorationImage(
+            image: providerControlTime.currentDuration >
+                    providerControlTime.selectedTime / 2
+                ? AssetImage('assets/logos/sunback.jpg')
+                : AssetImage('assets/logos/moonback.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -198,23 +183,25 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
               ),
               const SizedBox(height: 20),
               SizedBox(
-                height: 50,
+                height: MediaQuery.of(context).size.width *
+                    (1 -
+                        providerControlTime.currentDuration /
+                            providerControlTime.selectedTime),
                 child: Image(
-                  image: AssetImage('assets/logos/sun.gif'),
+                  image: providerControlTime.currentDuration <=
+                          providerControlTime.selectedTime / 2
+                      ? AssetImage('assets/logos/moon.gif')
+                      : AssetImage('assets/logos/sun.gif'),
                 ),
               ),
               const SizedBox(height: 20),
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: 100,
-                color: Colors.white,
                 child: Stack(
                   children: [
                     Container(
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 190, 230, 247),
-                      ),
-                      // This will help visualize the actual width
+                      decoration: BoxDecoration(),
                       child: LayoutBuilder(
                         builder:
                             (BuildContext context, BoxConstraints constraints) {
@@ -226,8 +213,8 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                             percent: 1 -
                                 providerControlTime.currentDuration /
                                     providerControlTime.selectedTime,
-                            backgroundColor: Color.fromARGB(255, 190, 230, 247),
-                            progressColor: Color.fromARGB(255, 190, 230, 247),
+                            backgroundColor: Colors.transparent,
+                            progressColor: Colors.transparent,
                           );
                         },
                       ),

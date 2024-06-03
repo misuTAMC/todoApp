@@ -1,9 +1,7 @@
-
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import 'package:tinhtoandidong_project/resources/auth_method.dart';
 import 'package:tinhtoandidong_project/resources/storage_method.dart';
 import 'package:tinhtoandidong_project/screens/add_note_screen.dart';
@@ -27,8 +25,6 @@ Color getRandomColor() {
 }
 
 class _TodoScreenState extends State<TodoScreen> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,16 +39,24 @@ class _TodoScreenState extends State<TodoScreen> {
                 Row(
                   children: [
                     const SizedBox(width: 20),
+                    // FutureBuilder là một widget trong Flutter giúp xây dựng UI dựa trên kết quả của một Future.
                     FutureBuilder<String>(
+                      // Chúng ta đang sử dụng phương thức getUserName() là bất đồng bộ, nó trả về một Future mà sẽ hoàn thành sau một khoảng thời gian.
                       future: StorageMethod().getUserName(),
+                      // Hàm builder sẽ được gọi để xây dựng UI dựa trên kết quả của Future. Snapshot chứa kết quả của Future.
                       builder: (BuildContext context,
                           AsyncSnapshot<String> snapshot) {
+                        // ConnectionState.waiting nghĩa là Future vẫn chưa hoàn thành, vì vậy chúng ta trả về CircularProgressIndicator để chỉ ra rằng ứng dụng đang chờ.
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
+                        }
+                        // Nếu Future hoàn thành với một lỗi, dữ liệu không khả dụng, vì vậy chúng ta trả về một thông báo lỗi.
+                        else if (snapshot.hasError) {
                           return Text('Error: ${snapshot.error}');
-                        } else {
+                        }
+                        // Nếu Future hoàn thành thành công, chúng ta có dữ liệu, vì vậy chúng ta có thể hiển thị nó trong một widget Text.
+                        else {
                           return Text(
                             '${snapshot.data}\'s note',
                             style: TextStyle(
@@ -148,13 +152,14 @@ class _TodoScreenState extends State<TodoScreen> {
                                           borderRadius:
                                               BorderRadius.circular(20.0),
                                           side: BorderSide(
-                                            color: Colors.black,
+                                            color: const Color.fromARGB(
+                                                255, 234, 221, 221),
                                             width: 1,
                                           ),
                                         ),
                                         shadowColor:
                                             Colors.grey.withOpacity(0.6),
-                                        backgroundColor: getRandomColor(),
+                                        backgroundColor: Colors.white,
                                         alignment: Alignment.center,
                                         title: Text(
                                           textAlign: TextAlign.center,
@@ -173,7 +178,10 @@ class _TodoScreenState extends State<TodoScreen> {
                                         actions: <Widget>[
                                           TextButton(
                                             style: ButtonStyle(
-                                              shape: MaterialStateProperty.all<
+                                              backgroundColor:
+                                                  WidgetStateProperty.all<
+                                                      Color>(getRandomColor()),
+                                              shape: WidgetStateProperty.all<
                                                   RoundedRectangleBorder>(
                                                 RoundedRectangleBorder(
                                                   borderRadius:
@@ -181,7 +189,7 @@ class _TodoScreenState extends State<TodoScreen> {
                                                           20.0),
                                                 ),
                                               ),
-                                              side: MaterialStateProperty.all<
+                                              side: WidgetStateProperty.all<
                                                   BorderSide>(
                                                 BorderSide(
                                                     color: Colors.black,
@@ -190,7 +198,7 @@ class _TodoScreenState extends State<TodoScreen> {
                                             ),
                                             child: Text(
                                               textAlign: TextAlign.center,
-                                              '#Cancel',
+                                              'Cancel',
                                               style: TextStyle(
                                                 color: Colors.black,
                                               ),
@@ -202,7 +210,10 @@ class _TodoScreenState extends State<TodoScreen> {
                                           ),
                                           TextButton(
                                             style: ButtonStyle(
-                                              shape: MaterialStateProperty.all<
+                                              backgroundColor:
+                                                  WidgetStateProperty.all<
+                                                      Color>(getRandomColor()),
+                                              shape: WidgetStateProperty.all<
                                                   RoundedRectangleBorder>(
                                                 RoundedRectangleBorder(
                                                   borderRadius:
@@ -210,7 +221,7 @@ class _TodoScreenState extends State<TodoScreen> {
                                                           20.0),
                                                 ),
                                               ),
-                                              side: MaterialStateProperty.all<
+                                              side: WidgetStateProperty.all<
                                                   BorderSide>(
                                                 BorderSide(
                                                     color: Colors.black,
@@ -219,7 +230,7 @@ class _TodoScreenState extends State<TodoScreen> {
                                             ),
                                             child: Text(
                                               textAlign: TextAlign.center,
-                                              '#Sign Out',
+                                              'Sign Out',
                                               style: TextStyle(
                                                 color: Colors.black,
                                               ),
@@ -231,9 +242,9 @@ class _TodoScreenState extends State<TodoScreen> {
                                           TextButton(
                                             style: ButtonStyle(
                                               backgroundColor:
-                                                  MaterialStateProperty.all<
-                                                      Color>(Colors.white),
-                                              shape: MaterialStateProperty.all<
+                                                  WidgetStateProperty.all<
+                                                      Color>(getRandomColor()),
+                                              shape: WidgetStateProperty.all<
                                                   RoundedRectangleBorder>(
                                                 RoundedRectangleBorder(
                                                   borderRadius:
@@ -241,7 +252,7 @@ class _TodoScreenState extends State<TodoScreen> {
                                                           20.0),
                                                 ),
                                               ),
-                                              side: MaterialStateProperty.all<
+                                              side: WidgetStateProperty.all<
                                                   BorderSide>(
                                                 BorderSide(
                                                     color: Colors.black,
@@ -257,10 +268,12 @@ class _TodoScreenState extends State<TodoScreen> {
                                             ),
                                             onPressed: () {
                                               Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const PomodoroScreen()));
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const PomodoroScreen(),
+                                                ),
+                                              );
                                             },
                                           ),
                                         ],
