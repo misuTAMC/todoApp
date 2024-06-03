@@ -15,6 +15,9 @@ class User {
     required this.phone,
     
   });
+  //*tao 1 map<String,dynamic> de chuyen doi tu 1 object sang 1 map
+  //*toJson():tra ve 1 map<String,dynamic> chua data cua object
+  //*vi trong firebase thi data cua 1 document phai la 1 map<String,dynamic>
   Map<String, dynamic> toJson() {
     return {
       'email': email,
@@ -25,21 +28,34 @@ class User {
       
     };
   }
-
-  static User fromSnap(DocumentSnapshot snapshot) {
-    //*data return ve la 1 map<String,dynamic>
+  //*phương thức fromSnap được sử dụng để tạo một đối tượng `User` từ một `DocumentSnapshot`(1 bản ghi trong firestore)
+  //*nó lấy dữ liệu từ `snapshot` và ép kiểu nó thành `Map<String, dynamic>`
+  //*và sau đó sử dụng dữ liệu đó để tạo một đối tượng `User`.nêu giá trị không tồn tại thì sẽ return ''
+ // Định nghĩa một phương thức tĩnh `fromSnap` nhận vào một `DocumentSnapshot`
+static User fromSnap(DocumentSnapshot snapshot) {
+    // Lấy dữ liệu từ `snapshot` và ép kiểu nó thành `Map<String, dynamic>`
     var snapshotAssignment = snapshot.data() as Map<String, dynamic>;
 
+    // Trả về một đối tượng `User` mới được tạo từ dữ liệu trong `snapshot`
     return User(
+      // Lấy giá trị 'email' từ `snapshot`, ép kiểu nó thành `String`
+      // Nếu giá trị 'email' không tồn tại, sử dụng chuỗi rỗng ('') thay thế
       email: snapshotAssignment['email'] as String? ?? '',
+      // Lấy giá trị 'uid' từ `snapshot`, ép kiểu nó thành `String`
+      // Nếu giá trị 'uid' không tồn tại, sử dụng chuỗi rỗng ('') thay thế
       uid: snapshotAssignment['uid'] as String? ?? '',
+      // Lấy giá trị 'username' từ `snapshot`, ép kiểu nó thành `String`
+      // Nếu giá trị 'username' không tồn tại, sử dụng chuỗi rỗng ('') thay thế
       username: snapshotAssignment['username'] as String? ?? '',
+      // Lấy giá trị 'phone' từ `snapshot`, ép kiểu nó thành `String`
+      // Nếu giá trị 'phone' không tồn tại, sử dụng chuỗi rỗng ('') thay thế
       phone: snapshotAssignment['phone'] as String? ?? '',
-     
-      
     );
-  }
 }
+}
+
+
+
 //*DocumentSnapshot la 1 class cua cloud_firestore,no chua data cua 1 document cu the tren firestore
 //*data():tra ve data cua document do duoi dang map<String,dynamic>
 //*id:tra ve id cua document do

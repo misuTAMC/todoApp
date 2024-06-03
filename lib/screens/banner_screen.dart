@@ -13,6 +13,7 @@ class BannerScreen extends StatefulWidget {
 class _BannerScreenState extends State<BannerScreen> {
   double opacityValue = 1.0;
 
+//*hàm này sẽ trả về một màu ngẫu nhiên liên tục mỗi lần được gọi
   Color getRandomColor() {
     return Color.fromARGB(
       255,
@@ -28,11 +29,14 @@ class _BannerScreenState extends State<BannerScreen> {
       backgroundColor: Colors.white,
       body: GestureDetector(
         onTap: () {
+          //*khi click vao: thay doi opacity thanh 0 va nguoc lai la 1
           setState(() {
             opacityValue = opacityValue == 1.0 ? 0.0 : 1.0;
           });
+          //*sau 5s chuyen,hàm bên trong sẽ được call
           Future.delayed(const Duration(seconds: 5), () {
-            Navigator.push(
+          //*chuyển qua trang login
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => const LoginScreen(),
@@ -90,6 +94,7 @@ class _BannerScreenState extends State<BannerScreen> {
                         borderRadius: BorderRadius.circular(40),
                         color: getRandomColor(),
                         boxShadow: [
+                         
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.5),
                             spreadRadius: 5,

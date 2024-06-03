@@ -19,9 +19,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  //*tao 2 bien de luu gia tri cua email va password mà người dùng nhập vào
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  //*tao 1 bien de kiem tra xem nguoi dung da nhap email va password chua
   bool _isFilled = false;
+  //*tao 1 bien de kiem tra xem nguoi dung co dang nhap hay khong
   bool _isLoading = false;
   double opacityValue = 1.0;
   @override
@@ -33,21 +36,35 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _checkIfFilled() {
     setState(() {
+      //*kiem tra xem nguoi dung da nhap email va password chua
+      //*neu da nhap thi _isFilled=true
+      //*neu chua nhap thi _isFilled=false
       _isFilled = _emailController.text.isNotEmpty &&
           _passwordController.text.isNotEmpty;
     });
   }
 
+// Định nghĩa một phương thức bất đồng bộ tên `loginUser`
   void loginUser() async {
+    // Đặt trạng thái `_isLoading` thành `true`, có thể được sử dụng để hiển thị một spinner loading trong UI
     setState(() {
       _isLoading = true;
     });
+
+    // Gọi phương thức `logInUser` từ lớp `AuthMethods` để thực hiện việc đăng nhập
+    // Phương thức này nhận vào email và mật khẩu từ các controller tương ứng
+    // Kết quả trả về (một chuỗi) được lưu vào biến `res`
     String res = await AuthMethods().logInUser(
       email: _emailController.text,
       password: _passwordController.text,
     );
+
+    // In kết quả ra console
     print(res);
+
+    // Kiểm tra kết quả
     if (res == "Success dang nhap:o auth_method.dart") {
+      // Nếu thành công, điều hướng người dùng đến màn hình mới (`ResponsiveLayout`)
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => const ResponsiveLayout(
@@ -57,13 +74,17 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     } else {
+      // Nếu không thành công, hiển thị một Snackbar với thông báo lỗi
       showSnackBar(context, res);
+      // In lỗi ra console
       print("loi dang nhap: $res");
     }
+
+    // Cuối cùng, đặt `_isLoading` trở lại `false` để ẩn spinner loading
     setState(() {
       _isLoading = false;
     });
-  }
+}
 
   Color getRandomColor() {
     return Color.fromARGB(
@@ -74,6 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  //*tao 1 phuong thuc de chuyen huong den signup_screen
   void navigatorToSignup() {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return const SignupScreen();
@@ -262,6 +284,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 16),
                   // Login Button
                   InkWell(
+                    //*neu _isFilled=true thi khi click vao button thi se goi loginUser,nguoc lai thi khong lam gi
                     onTap: _isFilled ? loginUser : null,
                     child: AnimatedOpacity(
                       opacity: _isFilled ? 1 : 0,
@@ -276,6 +299,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           color: Color.fromARGB(163, 24, 24, 0),
                         ),
+                        //*neu _isLoading=true thi hien thi CircularProgressIndicator,nguoc lai hien thi Text('Log in')
                         child: _isLoading
                             ? const Center(
                                 child: CircularProgressIndicator(

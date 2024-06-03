@@ -1,27 +1,90 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:tinhtoandidong_project/provider/time_provider.dart';
 import 'package:tinhtoandidong_project/screens/todo_screen.dart';
+
 import 'package:tinhtoandidong_project/widgets/time_options.dart';
 
-class PomodoroScreen extends StatelessWidget {
+class PomodoroScreen extends StatefulWidget {
   const PomodoroScreen({super.key});
+
+  State<PomodoroScreen> createState() => _PomodoroScreenState();
+}
+
+class _PomodoroScreenState extends State<PomodoroScreen> {
+  
+ 
 
   @override
   Widget build(BuildContext context) {
     final providerControlTime = Provider.of<TimeProvider>(context);
     final seconds = providerControlTime.currentDuration % 60;
     final minutes = providerControlTime.currentDuration ~/ 60;
-
-    // Ensure the provider is correctly set up
     if (providerControlTime.selectedTime == 0) {
-      // Handle the case where selectedTime is 0 to avoid division by zero
       return Scaffold(
         body: Center(
           child: Text('Please set a timer duration'),
         ),
       );
+    }
+    if (providerControlTime.currentDuration == 0 &&
+        providerControlTime.timePlaying == false) {
+      providerControlTime.currentDuration = providerControlTime.selectedTime;
+      AwesomeNotifications().dismissAllNotifications();
+
+      // Tạo thông báo
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: 10,
+          channelKey: 'app_notification_channel',
+          title: 'Pikachu go',
+          body: 'Pika pika!',
+          customSound: 'resource://raw/pikachu_sound.wav',
+        ),
+      );
+
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                actions: <Widget>[
+                  const SizedBox(height: 40),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      AwesomeNotifications().dismissNotificationsByChannelKey(
+                        'app_notification_channel',
+                      );
+                    },
+                    child: Image.asset(
+                      alignment: Alignment.center,
+                      'assets/logos/smile.gif',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      'Pika pika!',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+
+     
     }
 
     return Scaffold(

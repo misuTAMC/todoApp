@@ -16,7 +16,7 @@ class TimeProvider extends ChangeNotifier {
   }
 
   void startTimer() {
-    
+
     timePlaying = true;
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       currentDuration--;

@@ -1,13 +1,12 @@
-import 'dart:io';
+
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:tinhtoandidong_project/resources/auth_method.dart';
 import 'package:tinhtoandidong_project/resources/storage_method.dart';
 import 'package:tinhtoandidong_project/screens/add_note_screen.dart';
-import 'package:tinhtoandidong_project/screens/choose_background.dart';
 import 'package:tinhtoandidong_project/screens/pomodoro_screen.dart';
 import 'package:tinhtoandidong_project/widgets/task.dart';
 
@@ -28,47 +27,7 @@ Color getRandomColor() {
 }
 
 class _TodoScreenState extends State<TodoScreen> {
-  List<String> _images = [
-    'assets/logos/jelly fish.jpg',
-    'assets/logos/owl.jpg',
-  ];
-  String? _selectedImageFromGallery;
-  bool chooseAssetOrImage = false;
-  int _currentIndex = 0;
-  final ImagePicker _picker = ImagePicker();
-  Future<void> _pickImageFromList() async {
-    String? selectedImage = await Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => ImageSelectionScreen(images: _images)),
-    );
 
-    if (selectedImage != null) {
-      setState(() {
-        _currentIndex = _images.indexOf(selectedImage);
-        chooseAssetOrImage = false; // set to false when image is from list
-      });
-    }
-  }
-
-  ImageProvider _getImage() {
-    if (chooseAssetOrImage) {
-      return FileImage(File(_selectedImageFromGallery!));
-    } else {
-      return AssetImage(_images[_currentIndex]);
-    }
-  }
-
-  Future<void> _pickImageFromGallery() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      setState(() {
-        _selectedImageFromGallery = image.path;
-        chooseAssetOrImage = true; // set to true when image is from gallery
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,12 +35,6 @@ class _TodoScreenState extends State<TodoScreen> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: _getImage(),
-              fit: BoxFit.cover,
-            ),
-          ),
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Column(
@@ -324,30 +277,6 @@ class _TodoScreenState extends State<TodoScreen> {
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 20),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      color: Colors.black,
-                      icon: Icon(
-                        Icons.image_search_sharp,
-                      ),
-                      onPressed: () async {
-                        await _pickImageFromList();
-                      },
-                    ),
-                    IconButton(
-                      color: Colors.black,
-                      icon: Icon(
-                        Icons.add_photo_alternate_outlined,
-                      ),
-                      onPressed: () async {
-                        await _pickImageFromGallery();
-                      },
                     ),
                     const SizedBox(width: 20),
                   ],

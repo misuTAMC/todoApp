@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tinhtoandidong_project/provider/user_provider.dart';
@@ -7,8 +8,26 @@ import 'package:tinhtoandidong_project/responsive/responsive_layout_screen.dart'
 import 'package:tinhtoandidong_project/responsive/web_screen.layout.dart';
 import 'package:tinhtoandidong_project/screens/banner_screen.dart';
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    notificationHandler();
+    super.initState();
+  }
+
+  void notificationHandler() {
+    FirebaseMessaging.onMessage.listen((event) async {
+      print(event.notification!.body);
+     
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +52,7 @@ class MyApp extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.active) {
               //*kiem tra xem co data hay khong
               if (snapshot.hasData) {
+              
                 return const ResponsiveLayout(
                   webScreenLayout: WebScreenLayout(),
                   mobileScreenLayout: MobileScreenLayout(),

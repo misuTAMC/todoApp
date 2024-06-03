@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tinhtoandidong_project/provider/time_provider.dart';
 
 List selectableTimes = [
+  "2",
   "10",
   "300",
   "600",
@@ -29,8 +30,6 @@ List selectableTimes = [
   "6900",
   "7200",
 ];
-
-
 
 class TimeOptions extends StatelessWidget {
   TimeOptions({super.key});
