@@ -1,7 +1,9 @@
+// Import các thư viện cần thiết
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tinhtoandidong_project/provider/time_provider.dart';
 
+// Danh sách các thời gian có thể chọn
 List selectableTimes = [
   "2",
   "10",
@@ -34,24 +36,39 @@ List selectableTimes = [
 class TimeOptions extends StatelessWidget {
   TimeOptions({super.key});
 
+  // Hàm xây dựng UI
   @override
   Widget build(BuildContext context) {
+    // Lấy đối tượng provider từ context
     final provider = Provider.of<TimeProvider>(context);
+
+    // Trả về một widget cuộn ngang
     return SingleChildScrollView(
+      // Khởi tạo vị trí cuộn ban đầu
       controller: ScrollController(initialScrollOffset: 155),
+      // Đặt hướng cuộn là ngang
       scrollDirection: Axis.horizontal,
+      // Tạo một hàng chứa các widget con
       child: Row(
+        // Duyệt qua danh sách thời gian có thể chọn
         children: selectableTimes.map((time) {
+          // Trả về một widget có thể nhấp
           return InkWell(
+            // Khi nhấp, cập nhật thời gian đã chọn trong provider
             onTap: () {
               return provider.selectTime(double.parse(time));
             },
+            // Tạo một container chứa text
             child: Container(
+              // Đặt margin phải là 10
               margin: EdgeInsets.only(right: 10),
+              // Đặt chiều rộng và chiều cao
               width: 70,
               height: 50,
+              // Tạo decoration cho container
               decoration: int.parse(time) == provider.selectedTime
                   ? BoxDecoration(
+                      // Nếu thời gian này đã được chọn, đặt màu nền là trắng, viền đen và có bóng
                       color: Colors.white,
                       border: Border.all(
                         width: 2,
@@ -68,6 +85,7 @@ class TimeOptions extends StatelessWidget {
                       ],
                     )
                   : BoxDecoration(
+                      // Nếu thời gian này chưa được chọn, đặt màu nền là trắng, viền đen
                       color: Colors.white,
                       border: Border.all(
                         width: 1,
@@ -75,9 +93,12 @@ class TimeOptions extends StatelessWidget {
                       ),
                       borderRadius: BorderRadius.circular(5),
                     ),
+              // Tạo một text widget ở giữa container
               child: Center(
                 child: Text(
+                  // Hiển thị thời gian chia cho 60
                   '${int.parse(time) ~/ 60}',
+                  // Đặt màu sắc, kích thước và độ dày cho text
                   style: TextStyle(
                     color: int.parse(time) == provider.selectedTime
                         ? Colors.black
@@ -89,7 +110,7 @@ class TimeOptions extends StatelessWidget {
               ),
             ),
           );
-        }).toList(),
+        }).toList(), // Chuyển đổi map sang list
       ),
     );
   }

@@ -13,6 +13,11 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(
+    //* Sử dụng ChangeNotifierProvider để cung cấp TimeProvider cho toàn bộ ứng dụng
+    //? ChangeNotifierProvider cung cấp một đối tượng TimeProvider cho toàn bộ ứng dụng
+    //*:nó sẽ tạo ra một instance TimeProvider mới và cung cấp nó cho widget con 
+    //*khi timeProvider thay đổi(được gọi hàm notifyListeners()), tất cả các widget con sẽ được rebuild(được gọi hàm build())
+    
     ChangeNotifierProvider<TimeProvider>(
       create: (context) => TimeProvider(),
       child: const MyApp(),
