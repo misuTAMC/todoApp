@@ -17,13 +17,7 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
     final providerControlTime = Provider.of<TimeProvider>(context);
     final seconds = providerControlTime.currentDuration % 60;
     final minutes = providerControlTime.currentDuration ~/ 60;
-    if (providerControlTime.selectedTime == 0) {
-      return Scaffold(
-        body: Center(
-          child: Text('Please set a timer duration'),
-        ),
-      );
-    }
+
     if (providerControlTime.currentDuration == 0 &&
         providerControlTime.timePlaying == false) {
       providerControlTime.currentDuration = providerControlTime.selectedTime;
@@ -244,17 +238,16 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                       ),
                     ),
                     Positioned(
-                      top: -12, // Adjust this value as needed
-                      left: MediaQuery.of(context).size.width *
-                          (1 -
-                              providerControlTime.currentDuration /
-                                  providerControlTime.selectedTime),
-                      child: Image.asset(
-                        'assets/logos/pikachu indicator.gif',
-                        width: 60,
-                        height: 60,
-                      ),
-                    ),
+                        top: -12, // Adjust this value as needed
+                        left: MediaQuery.of(context).size.width *
+                            (1 -
+                                providerControlTime.currentDuration /
+                                    providerControlTime.selectedTime),
+                        child: Image.asset(
+                          'assets/logos/pikachu indicator.gif',
+                          width: 60,
+                          height: 60,
+                        )),
                   ],
                 ),
               ),

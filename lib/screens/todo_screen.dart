@@ -59,6 +59,7 @@ class _TodoScreenState extends State<TodoScreen> {
                         else {
                           return Text(
                             '${snapshot.data}\'s note',
+                            maxLines: 2,
                             style: TextStyle(
                               fontSize: 35,
                               fontWeight: FontWeight.w300,
