@@ -164,7 +164,7 @@ class StorageMethod {
           .get();
       return user.data()!['username'];
     } catch (e) {
-      return 'User ở auth_method.dart';
+      return 'User';
     }
   }
 }

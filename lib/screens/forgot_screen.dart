@@ -2,29 +2,22 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:tinhtoandidong_project/resources/auth_method.dart';
-import 'package:tinhtoandidong_project/responsive/mobile_screen_layout.dart';
-import 'package:tinhtoandidong_project/responsive/responsive_layout_screen.dart';
-import 'package:tinhtoandidong_project/responsive/web_screen.layout.dart';
 import 'package:tinhtoandidong_project/screens/login_screen.dart';
 import 'package:tinhtoandidong_project/utils/utils.dart';
 import 'package:tinhtoandidong_project/widgets/logo_app.dart';
 import 'package:tinhtoandidong_project/widgets/text_field_input.dart';
 
-class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+class ForgotScreen extends StatefulWidget {
+  const ForgotScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  State<ForgotScreen> createState() => _ForgotScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen>
+class _ForgotScreenState extends State<ForgotScreen>
     with SingleTickerProviderStateMixin {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _rePasswordController = TextEditingController();
-
+  final AuthMethods _authMethods = AuthMethods();
   bool _isFilled = false;
   bool _isLoading = false;
   double opacityValue = 1.0;
@@ -32,19 +25,12 @@ class _SignupScreenState extends State<SignupScreen>
   @override
   void dispose() {
     _emailController.dispose();
-    _passwordController.dispose();
-    _usernameController.dispose();
-    _phoneController.dispose();
+
     super.dispose();
   }
 
   void _checkIfFilled() {
-    if (_emailController.text.isNotEmpty &&
-        _passwordController.text.isNotEmpty &&
-        _usernameController.text.isNotEmpty &&
-        _phoneController.text.isNotEmpty &&
-        _rePasswordController.text.isNotEmpty &&
-        _rePasswordController.text == _passwordController.text) {
+    if (_emailController.text.isNotEmpty) {
       setState(() {
         _isFilled = true;
       });
@@ -52,42 +38,6 @@ class _SignupScreenState extends State<SignupScreen>
       setState(() {
         _isFilled = false;
       });
-    }
-  }
-
-  void signUpUser() async {
-    setState(() {
-      _isLoading = true;
-    });
-    String res = await AuthMethods().signUpUser(
-      email: _emailController.text,
-      password: _passwordController.text,
-      username: _usernameController.text,
-      phone: _phoneController.text,
-    );
-    print(res);
-
-    if (res == 'Success dang ki:o auth_method.dart') {
-      setState(() {
-        _isLoading = false;
-      });
-      if (context.mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const ResponsiveLayout(
-              webScreenLayout: WebScreenLayout(),
-              mobileScreenLayout: MobileScreenLayout(),
-            ),
-          ),
-        );
-      }
-    } else {
-      setState(() {
-        _isLoading = false;
-      });
-      if (context.mounted) {
-        showSnackBar(context, res);
-      }
     }
   }
 
@@ -366,7 +316,7 @@ class _SignupScreenState extends State<SignupScreen>
                             children: [
                               Expanded(
                                 child: Text(
-                                  '#TODO: Add some tasks',
+                                  '#TODO: Fogot password?',
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
@@ -384,7 +334,7 @@ class _SignupScreenState extends State<SignupScreen>
                           ),
                           SizedBox(height: 10),
                           Text(
-                            'Don\'t read this. It\'s just a dummy text. But if you are reading this, then you are wasting your time. So stop reading this and sign up now!',
+                            'Maybe you should try to remember it. Or just reset it. It\'s up to you. But you should do it now!',
                             maxLines: 15,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -411,52 +361,32 @@ class _SignupScreenState extends State<SignupScreen>
                   const SizedBox(height: 20),
                   TextFieldInput(
                     onChanged: (value) => _checkIfFilled(),
-                    textEditingController: _usernameController,
-                    hintText: 'Enter your username',
+                    textEditingController: _emailController,
+                    hintText: 'Enter your email',
                     textInputType: TextInputType.name,
                     fillColor: Colors.white,
                   ),
                   const SizedBox(height: 10),
-                  TextFieldInput(
-                    onChanged: (value) => _checkIfFilled(),
-                    textEditingController: _emailController,
-                    hintText: 'Enter your email',
-                    textInputType: TextInputType.emailAddress,
-                    fillColor: Colors.white,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFieldInput(
-                    onChanged: (value) => _checkIfFilled(),
-                    textEditingController: _passwordController,
-                    hintText: 'Enter your password',
-                    textInputType: TextInputType.visiblePassword,
-                    fillColor: Colors.white,
-                    isPass: true,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFieldInput(
-                    onChanged: (value) => _checkIfFilled(),
-                    textEditingController: _rePasswordController,
-                    hintText: 'Re-enter your password',
-                    textInputType: TextInputType.visiblePassword,
-                    fillColor: _rePasswordController.text ==
-                                _passwordController.text ||
-                            _rePasswordController.text.isEmpty
-                        ? Colors.white
-                        : Colors.red.shade50,
-                    isPass: true,
-                  ),
-                  const SizedBox(height: 10),
-                  TextFieldInput(
-                    onChanged: (value) => _checkIfFilled(),
-                    textEditingController: _phoneController,
-                    hintText: 'Enter your phone',
-                    textInputType: TextInputType.phone,
-                    fillColor: Colors.white,
-                  ),
-                  const SizedBox(height: 16),
+
                   InkWell(
-                    onTap: _isFilled ? signUpUser : null,
+                    onTap: () {
+                      if (_isFilled == true) {
+                        _authMethods
+                            .resetPasswordWithLink(_emailController.text);
+                        showSnackBar(context,
+                            'An email for password reset has been sent to your email');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const LoginScreen();
+                            },
+                          ),
+                        );
+                      } else {
+                        return null;
+                      }
+                    },
                     child: AnimatedOpacity(
                       opacity: _isFilled ? 1 : 0,
                       duration: const Duration(milliseconds: 500),
@@ -478,7 +408,7 @@ class _SignupScreenState extends State<SignupScreen>
                                 color: Color.fromARGB(163, 24, 24, 0),
                               ),
                               child: const Text(
-                                'Sign up',
+                                'Send Email',
                                 style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,
@@ -487,7 +417,9 @@ class _SignupScreenState extends State<SignupScreen>
                             ),
                     ),
                   ),
-                  const SizedBox(height: 230),
+                  const SizedBox(
+                    height: 420,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

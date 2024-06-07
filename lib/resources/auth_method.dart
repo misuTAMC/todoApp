@@ -123,4 +123,11 @@ class AuthMethods {
           builder: (context) => LoginScreen(),
         ));
   }
+  Future<void> resetPasswordWithLink(String email) async {
+   try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 }
