@@ -145,6 +145,7 @@ class _AddNoteState extends State<AddNote> { //Dòng này khai báo một lớp 
                     const SizedBox(height: 10), //Khoảng trống cố định 10 pixel giữa hình ảnh và tiêu đề
                     //Text(Nội dung văn bản phụ thuộc vào chỉ số index.
                     //Kiểu chữ và màu sắc phụ thuộc vào biến indexx (giống như viền của container) để làm nổi bật mục được chọn.
+                    Text(
                       index == 0
                           ? '#Study '
                           : index == 1
