@@ -6,6 +6,7 @@ import 'package:tinhtoandidong_project/resources/auth_method.dart';
 import 'package:tinhtoandidong_project/responsive/mobile_screen_layout.dart';
 import 'package:tinhtoandidong_project/responsive/responsive_layout_screen.dart';
 import 'package:tinhtoandidong_project/responsive/web_screen.layout.dart';
+import 'package:tinhtoandidong_project/screens/forgot_screen.dart';
 import 'package:tinhtoandidong_project/screens/signup_screen.dart';
 import 'package:tinhtoandidong_project/utils/utils.dart';
 import 'package:tinhtoandidong_project/widgets/logo_app.dart';
@@ -84,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isLoading = false;
     });
-}
+  }
 
   Color getRandomColor() {
     return Color.fromARGB(
@@ -281,7 +282,28 @@ class _LoginScreenState extends State<LoginScreen> {
                     fillColor: Colors.white,
                     isPass: true,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 1),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const ForgotScreen();
+                        }));
+                      },
+                      child: const Text(
+                        'Forgot password?',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
                   // Login Button
                   InkWell(
                     //*neu _isFilled=true thi khi click vao button thi se goi loginUser,nguoc lai thi khong lam gi
