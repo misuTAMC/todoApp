@@ -5,7 +5,7 @@ import 'package:tinhtoandidong_project/provider/time_provider.dart';
 import 'package:tinhtoandidong_project/screens/todo_screen.dart';
 import 'package:tinhtoandidong_project/widgets/time_options.dart';
 
-// Định nghĩa class PomodoroScreen kế thừa StatefulWidget
+// Tạo class PomodoroScreen kế thừa StatefulWidget
 class PomodoroScreen extends StatefulWidget {
   const PomodoroScreen({super.key});
 
@@ -33,6 +33,7 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
       providerControlTime.currentDuration =
           providerControlTime.selectedTime; // Đặt lại thời gian hiện tại
       WidgetsBinding.instance.addPostFrameCallback(
+        // callback sau khi frame được render
         (_) {
           showDialog(
             context: context,
@@ -68,10 +69,11 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
         },
       );
     }
-
+    // Main screen
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
+        // chứa nền và ảnh động
         height: double.infinity,
         decoration: BoxDecoration(
           color: Color.fromARGB(255, 190, 230, 247),
@@ -83,7 +85,9 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
             fit: BoxFit.cover,
           ),
         ),
+        // tạo nút quay lại
         child: SingleChildScrollView(
+          // cho phép cuộn
           child: Column(
             children: [
               const SizedBox(height: 40),
@@ -100,13 +104,14 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                           side: BorderSide(),
                           borderRadius: BorderRadius.all(Radius.circular(10)),
                         ),
+                        // khi pressed
                         onPressed: () {
                           Navigator.push(
                             context,
                             PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) =>
-                                      const TodoScreen(),
+                              pageBuilder: (context, animation,
+                                      secondaryAnimation) =>
+                                  const TodoScreen(), // quay lại màn hình TodoScreen
                               transitionsBuilder: (context, animation,
                                   secondaryAnimation, child) {
                                 var begin = const Offset(0.0, 1.0);
@@ -114,7 +119,6 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                                 var curve = Curves.ease;
                                 var tween = Tween(begin: begin, end: end)
                                     .chain(CurveTween(curve: curve));
-
                                 return SlideTransition(
                                   position: animation.drive(tween),
                                   child: child,
@@ -133,6 +137,7 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                   ),
                 ],
               ),
+              // Pikachu screen
               SizedBox(height: 50),
               Center(
                 child: Text(
@@ -144,22 +149,27 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                   ),
                 ),
               ),
+              // Bộ đếm thời gian
               SizedBox(height: 100),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center, // căn giữa
                 children: [
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.6,
+                    width: MediaQuery.of(context).size.width *
+                        0.6, //thiết lập chiều rộng container = 60% màn hình.
                     height: 80,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius:
+                          BorderRadius.circular(20), // bo tròn các gốc
                       boxShadow: [
+                        // thêm bóng đổ để tạo hiệu ứng nổi
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: Offset(0, 3),
+                          color: Colors.grey
+                              .withOpacity(0.5), // màu bóng mờ là 50%
+                          spreadRadius: 5, // độ lan
+                          blurRadius: 7, // độ mờ
+                          offset: Offset(0, 3), // độ xê dịch của bóng
                         ),
                       ],
                     ),
@@ -167,11 +177,13 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         border: Border.all(
+                          // tạo đường viền
                           width: 1,
                           color: Colors.black,
                         ),
                         borderRadius: BorderRadius.circular(20),
                       ),
+                      // hiển thị thời gian
                       child: Text(
                         seconds == 0
                             ? '${minutes}:${seconds.round()}0'
@@ -186,6 +198,7 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                   ),
                 ],
               ),
+              //Ảnh động thay đổi theo thời gian
               const SizedBox(height: 20),
               SizedBox(
                 height: MediaQuery.of(context).size.width *
@@ -200,10 +213,12 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                 ),
               ),
               const SizedBox(height: 20),
+              //Hiển thị thanh tiến trình
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: 100,
                 child: Stack(
+                  // cho phép chồng các widget con lên nhau
                   children: [
                     Container(
                       decoration: BoxDecoration(),
@@ -263,6 +278,7 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                   ],
                 ),
               ),
+              // Hiển thị các widget
               SizedBox(height: 20),
               TimeOptions(),
               SizedBox(height: 20),
