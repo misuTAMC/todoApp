@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 
+/*
+Định nghĩa lớp LogoApp kế thừa từ StatelessWidget
+Constructor của LogoApp, cho phép khởi tạo widget này. 
+Từ khóa const cho phép tạo một hằng số của widget nếu các giá trị truyền vào cũng là hằng số.
+*/
 class LogoApp extends StatelessWidget {
   const LogoApp({
     super.key,
   });
 
-  @override
+  @override //cho biết phương thức bên dưới ghi đè 1 phương thức trong lớp cha hoặc cơ sở.
   Widget build(BuildContext context) {
+    //phương thức build trả về widget giao diện của LogoApp
     return const Stack(
+      //Trả về một widget Stack, cho phép xếp chồng các widget con lên nhau.
       children: [
         Image(
           alignment: Alignment.center,

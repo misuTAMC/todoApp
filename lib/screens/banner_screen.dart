@@ -3,6 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:tinhtoandidong_project/screens/login_screen.dart';
 
+/*BannerScreen là một StatefulWidget =>có trạng thái thay đổi trong suốt thời gian tồn tại của nó.
+  -Constructor BannerScreen chấp nhận một key như là tham số tùy chọn.
+  -Phương thức createState tạo và trả về một thể hiện của _BannerScreenState,
+lớp này sẽ chứa trạng thái và logic hiển thị cho BannerScreen.*/
 class BannerScreen extends StatefulWidget {
   const BannerScreen({super.key});
 
@@ -11,7 +15,8 @@ class BannerScreen extends StatefulWidget {
 }
 
 class _BannerScreenState extends State<BannerScreen> {
-  double opacityValue = 1.0;
+  double opacityValue =
+      1.0; //thuộc tính trạng thái quản lý độ mờ của các widget AnimatedOpacity. Mặc định = 1.0 (hoàn toàn không trong suốt).
 
 //*hàm này sẽ trả về một màu ngẫu nhiên liên tục mỗi lần được gọi
   Color getRandomColor() {
@@ -25,18 +30,23 @@ class _BannerScreenState extends State<BannerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // định nghĩa hàm build để xây dựng giao diện cho widget
     return Scaffold(
+      //Scaffold: khung giao diện tiêu chuẩn trong flutter
       backgroundColor: Colors.white,
       body: GestureDetector(
+        //body chứa widget (GestureDectector: phát hiện cử chỉ chạm, vuốt)
         onTap: () {
-          //*khi click vao: thay doi opacity thanh 0 va nguoc lai la 1
+          //khi click vào
           setState(() {
-            opacityValue = opacityValue == 1.0 ? 0.0 : 1.0;
+            opacityValue = opacityValue == 1.0
+                ? 0.0
+                : 1.0; //thay doi opacity thanh 0 va nguoc lai la 1
           });
-          //*sau 5s chuyen,hàm bên trong sẽ được call
           Future.delayed(const Duration(seconds: 5), () {
-          //*chuyển qua trang login
+            //sau 5s chuyên qua login
             Navigator.pushReplacement(
+              //là một phương thức của Navigator để thay thế màn hình hiện tại bằng một màn hình mới.
               context,
               MaterialPageRoute(
                 builder: (context) => const LoginScreen(),
@@ -45,12 +55,14 @@ class _BannerScreenState extends State<BannerScreen> {
           });
         },
         child: Stack(
-          fit: StackFit.expand,
+          //stack cho phép xếp chông các widget
+          fit: StackFit.expand, //stack mở rộng hết kích thước widget cha
           children: [
             const SizedBox(height: 10),
             Positioned(
               top: 10,
               child: AnimatedOpacity(
+                //thay đổi độ mờ (opacity) của widget con liên tục cách 1s
                 opacity: opacityValue,
                 duration: const Duration(seconds: 1),
                 child: Row(
@@ -74,16 +86,16 @@ class _BannerScreenState extends State<BannerScreen> {
               ),
             ),
             Positioned(
-              top: 500,
+              top: 500, //sv stack
               left: 260,
               child: AnimatedOpacity(
                 opacity: opacityValue,
                 duration: const Duration(seconds: 2),
                 child: Padding(
-                  padding:
+                  padding: //khoảng trống xung quanh widget con
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                   child: Transform.rotate(
-                    angle: 0.2,
+                    angle: 0.2, //xoay 0.2 radian
                     child: Container(
                       width: 300,
                       height: 350,
@@ -91,31 +103,37 @@ class _BannerScreenState extends State<BannerScreen> {
                           bottom: 10), // Adjust margin here
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(40),
+                        borderRadius:
+                            BorderRadius.circular(40), //bo tròn gốc 40 đv
                         color: getRandomColor(),
                         boxShadow: [
-                         
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 5,
+                            spreadRadius: 5, //Bán kính lan rộng của bóng đổ
                             blurRadius: 7,
-                            offset: const Offset(-5, 0),
+                            offset: const Offset(
+                                -5, 0), //Độ lệch của bóng đổ sang trái 5 đv
                           ),
                         ],
                       ),
                       child: const Padding(
                         padding: EdgeInsets.all(20.0),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment
+                              .start, //Căn chỉnh các widget con theo cạnh bắt đầu của trục ngang.
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment
+                                  .spaceBetween, //Căn chỉnh các widget con sao cho khoảng cách giữa chúng được phân phối đều.
                               children: [
                                 Expanded(
+                                  //mở rộng child để chiếm không gian
                                   child: Text(
                                     '#We\'ve got your back!',
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
+                                    maxLines:
+                                        2, //Giới hạn số dòng của văn bản tối đa là 2. Nếu văn bản dài hơn 2 dòng, nó sẽ bị cắt bớt.
+                                    overflow: TextOverflow
+                                        .ellipsis, //Nếu văn bản bị cắt bớt do vượt quá số dòng tối đa, sẽ có dấu ba chấm (...) xuất hiện ở cuối để chỉ rằng văn bản đã bị cắt.
                                     style: TextStyle(
                                       fontSize: 30,
                                       fontWeight: FontWeight.w400,
@@ -126,6 +144,7 @@ class _BannerScreenState extends State<BannerScreen> {
                               ],
                             ),
                             Divider(
+                              // đường kẻ chia tiêu đề vs nội dung
                               color: Colors.black,
                               thickness: 1,
                             ),
