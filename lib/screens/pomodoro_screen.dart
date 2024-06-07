@@ -5,22 +5,33 @@ import 'package:tinhtoandidong_project/provider/time_provider.dart';
 import 'package:tinhtoandidong_project/screens/todo_screen.dart';
 import 'package:tinhtoandidong_project/widgets/time_options.dart';
 
+// Định nghĩa class PomodoroScreen kế thừa StatefulWidget
 class PomodoroScreen extends StatefulWidget {
   const PomodoroScreen({super.key});
 
   State<PomodoroScreen> createState() => _PomodoroScreenState();
 }
 
+// Định nghĩa state cho PomodoroScreen
 class _PomodoroScreenState extends State<PomodoroScreen> {
   @override
   Widget build(BuildContext context) {
-    final providerControlTime = Provider.of<TimeProvider>(context);
-    final seconds = providerControlTime.currentDuration % 60;
-    final minutes = providerControlTime.currentDuration ~/ 60;
-
+    final providerControlTime =
+        Provider.of<TimeProvider>(context); // Lấy provider
+    final seconds = providerControlTime.currentDuration % 60; // Tính giây
+    final minutes = providerControlTime.currentDuration ~/ 60; // Tính phút
+    if (providerControlTime.selectedTime == 0) {
+      return Scaffold(
+        body: Center(
+          child: Text(
+              'Please set a timer duration'), // Hiển thị nếu chưa đặt thời gian
+        ),
+      );
+    }
     if (providerControlTime.currentDuration == 0 &&
         providerControlTime.timePlaying == false) {
-      providerControlTime.currentDuration = providerControlTime.selectedTime;
+      providerControlTime.currentDuration =
+          providerControlTime.selectedTime; // Đặt lại thời gian hiện tại
       WidgetsBinding.instance.addPostFrameCallback(
         (_) {
           showDialog(
@@ -214,7 +225,7 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                       ),
                     ),
                     Positioned(
-                      top: 40, // Adjust this value as needed
+                      top: 40, // Điều chỉnh giá trị này theo nhu cầu
                       left: 0,
                       right: 0,
                       child: Divider(
@@ -226,7 +237,7 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                       ),
                     ),
                     Positioned(
-                      top: 100, // Adjust this value as needed
+                      top: 100, // Điều chỉnh giá trị này theo nhu cầu
                       left: 0,
                       right: 0,
                       child: Divider(
@@ -238,16 +249,17 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
                       ),
                     ),
                     Positioned(
-                        top: -12, // Adjust this value as needed
-                        left: MediaQuery.of(context).size.width *
-                            (1 -
-                                providerControlTime.currentDuration /
-                                    providerControlTime.selectedTime),
-                        child: Image.asset(
-                          'assets/logos/pikachu indicator.gif',
-                          width: 60,
-                          height: 60,
-                        )),
+                      top: -12, // Điều chỉnh giá trị này theo nhu cầu
+                      left: MediaQuery.of(context).size.width *
+                          (1 -
+                              providerControlTime.currentDuration /
+                                  providerControlTime.selectedTime),
+                      child: Image.asset(
+                        'assets/logos/pikachu indicator.gif',
+                        width: 60,
+                        height: 60,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -263,6 +275,7 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
   }
 }
 
+// Định nghĩa class TimeController kế thừa StatelessWidget
 class TimeController extends StatelessWidget {
   const TimeController({super.key});
 
@@ -288,9 +301,11 @@ class TimeController extends StatelessWidget {
         child: IconButton(
           onPressed: () {
             if (provider.timePlaying == true) {
-              Provider.of<TimeProvider>(context, listen: false).pauseTimer();
+              Provider.of<TimeProvider>(context, listen: false)
+                  .pauseTimer(); // Tạm dừng thời gian
             } else {
-              Provider.of<TimeProvider>(context, listen: false).startTimer();
+              Provider.of<TimeProvider>(context, listen: false)
+                  .startTimer(); // Bắt đầu thời gian
             }
             if (provider.currentDuration <= 0) {
               Provider.of<TimeProvider>(context, listen: false).selectTime(
