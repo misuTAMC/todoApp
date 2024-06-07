@@ -39,7 +39,7 @@ class _TodoScreenState extends State<TodoScreen> {
                 Row(
                   children: [
                     const SizedBox(width: 20),
-                    // FutureBuilder là một widget trong Flutter giúp xây dựng UI dựa trên kết quả của một Future.
+                    //Xây dựng UI dựa trên kết quả của một Future.
                     FutureBuilder<String>(
                       // Chúng ta đang sử dụng phương thức getUserName() là bất đồng bộ, nó trả về một Future mà sẽ hoàn thành sau một khoảng thời gian.
                       future: StorageMethod().getUserName(),
@@ -71,12 +71,14 @@ class _TodoScreenState extends State<TodoScreen> {
                         }
                       },
                     ),
+
                     const Spacer(),
                     SizedBox(
                       width: 40.0,
                       height: 40.0,
                       child: FloatingActionButton(
                         shape: const RoundedRectangleBorder(
+                          // hình chữ nhật bo góc
                           side: BorderSide(),
                           borderRadius: BorderRadius.all(Radius.circular(10)),
                         ),
@@ -94,10 +96,10 @@ class _TodoScreenState extends State<TodoScreen> {
                                 var curve = Curves.ease;
                                 var tween = Tween(begin: begin, end: end)
                                     .chain(CurveTween(curve: curve));
-
                                 return SlideTransition(
-                                  position: animation.drive(tween),
-                                  child: child,
+                                  position: animation
+                                      .drive(tween), // animation + tween
+                                  child: child, // widget con -> addNote
                                 );
                               },
                             ),
@@ -110,6 +112,7 @@ class _TodoScreenState extends State<TodoScreen> {
                         ),
                       ),
                     ),
+
                     const SizedBox(width: 20),
                     SizedBox(
                       width: 40.0,
@@ -149,6 +152,7 @@ class _TodoScreenState extends State<TodoScreen> {
                                           'Error: ${snapshot.error}'); // Show error message if something went wrong
                                     } else {
                                       return AlertDialog(
+                                        // 1 hộp thoại hiện thông báo và in4
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(20.0),
@@ -176,6 +180,8 @@ class _TodoScreenState extends State<TodoScreen> {
                                             color: Colors.black,
                                           ),
                                         ),
+
+                                        // Cancel button
                                         actions: <Widget>[
                                           TextButton(
                                             style: ButtonStyle(
@@ -209,6 +215,7 @@ class _TodoScreenState extends State<TodoScreen> {
                                                   .pop(); // Close the dialog
                                             },
                                           ),
+                                          // Sign out button
                                           TextButton(
                                             style: ButtonStyle(
                                               backgroundColor:
@@ -240,6 +247,7 @@ class _TodoScreenState extends State<TodoScreen> {
                                               AuthMethods().signOut(context);
                                             },
                                           ),
+                                          // #Pika go button
                                           TextButton(
                                             style: ButtonStyle(
                                               backgroundColor:
@@ -352,6 +360,7 @@ class _TodoScreenState extends State<TodoScreen> {
                   child: Text('Error: ${snapshot.error}'),
                 );
               }
+              // neu ko co note, de anh empty
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                 return Center(
                   child: type != 100
@@ -366,18 +375,21 @@ class _TodoScreenState extends State<TodoScreen> {
                 );
               }
 
-              final taskList = StorageMethod().getTask(snapshot);
-              final filteredTasks =
-                  taskList.where((task) => task.type == type).toList();
+              final taskList =
+                  StorageMethod().getTask(snapshot); //Lấy danh sách từ snapshot
+              final filteredTasks = taskList
+                  .where((task) => task.type == type)
+                  .toList(); // loc danh sach cong viec
 
               return ListView.builder(
-                scrollDirection: Axis.horizontal,
+                scrollDirection: Axis.horizontal, // cuộn ngang
                 itemCount: filteredTasks.length,
                 itemBuilder: (context, index) {
                   final task = filteredTasks[index];
                   return Transform.translate(
                     offset: Offset(index * -40.0, 0),
-                    child: TaskForm(task),
+                    child: TaskForm(
+                        task), // dich chuyển Taskform theo index tạo hiệu ứng trượt
                   );
                 },
               );
